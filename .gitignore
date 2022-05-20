@@ -1,0 +1,14 @@
+.env
+env/*
+
+account/__pycache__/*
+account/migrations/*
+
+authentication/__pycache__/*
+authentication/migrations/*
+
+daraja/__pycache__/*
+daraja/migrations/*
+
+media/*
+chamayetu/__pycache__/*

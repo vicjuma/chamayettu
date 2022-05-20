@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="container mb-4 pb-2">
+    <p class="fs-6 fst-italic">{{request.user.get_full_name}}</p>
+    <p class="fs-6 fst-italic">{{request.user.get_username}}</p>
+    <hr/>
+    <div class="row g-4 mt-1">
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <p class="fw-bold fs-5">Account Details</p>
+            <div class="row g-4">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="card shadow">
+                        <div class="card-body py-4 text-center">
+                            <h5 class="card-title">{% if chama %} Leave {% else %} Join {%endif%} Chama</h5>
+                            <p class="card-text"></p>
+                            {% if chama %}
+                                {% if chama.leave %}
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-danger btn-block">Leave</button>
+                                {% else %}
+                                    <a href="{% url 'step1' %}" class="btn btn-danger px-4 my-4">Leave</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Join</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bolder">Payment Details</h5>
+                            <p class="card-text pt-2">Receipt: {{transaction.receipt_no}}</p>
+                            <p class="card-text">Amount: {{transaction.amount}}</p>
+                            <p class="card-text">Date: {{transaction.created}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mt-2 p-2">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bolder">Savings Account</h5>
+                        <p class="card-text pt-2">Receipt: </p>
+                        <p class="card-text">Amount: </p>
+                        <p class="card-text">Date: </p>
+                        <p class="card-text" id="message">
+                        </p>
+                        <p class="card-text"><button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdropSave" class="btn btn-primary btn-block" id="save">Save</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <p class="fw-bold fs-5">Enrolled Chama</p>
+            <div class="row g-2">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    {% if chama %}
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title fs-6 pb-1">Chama ID: <span class="fs-6 fst-italic text-muted"> {{chama.id}}</span></h5>
+                            <hr/>
+                            <p class="card-text pt-2">Frequency: {{chama.frequency}}</p>
+                            <p class="card-text">Amount: {{chama.amount}}</p>
+                            <p class="card-text">Level: {{chama.level}}</p>
+                            <p class="card-text">Next payment: {{chama.next_payment_date}}</p>
+                            <p class="card-text"><button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" class="btn bg-light broder border-2 px-4">
+                                {% if chama.counter > 1 %} Members {% else %} Member {% endif %} <span class="badge bg-danger mx-1">{{chama.counter}}</span>
+                              </button></p>
+                            <!-- footer -->
+                            <div class="card-footer">
+                                <p class="card-text">Created: {{chama.created}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="card shadow bg-light">
+                        <div class="card-body text-center">
+                            <p class="card-text"></p>
+                            <p class="card-text px-4 my-3">You haven't joined any yet</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Confirmation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Cannot leave until you are in level 2.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-bs-dismiss="modal">Okay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Members</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for user in users %}
+                    {% if chama.user_id == user.id %}
+                        {% if user.profile_image %}
+                            <p class="card-text"><span><img src="{{ user.profile_image.url }}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% else %}
+                            <p class="card-text"><span><img src="{% static 'img/avatar.jpg' %}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="staticBackdropSave" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Save</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3 border bg-white p-4 rounded shadow mb-5" id="login-form">
+                    <div class="mb-3">
+                      <label for="phone_number" class="form-label">Phone number</label>
+                      <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{request.user.get_username}}">
+                    </div>
+                    <div class="mb-3">
+                      <label for="amount" class="form-label">Amount</label>
+                      <input type="text" class="form-control" id="amount" name="amount" aria-describedby="emailHelp">
+                      <div id="emailHelp" class="form-text">Enter amount you wish to save.</div>
+                    </div>
+                  </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="okay">Okay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+<script>
+    const okay = document.getElementById('okay')
+    const phone_number = document.getElementById('phone_number')
+    const amount = document.getElementById('amount')
+    const errors = document.getElementById('errors')
+    const message = document.getElementById('message')
+    const save = document.getElementById('save')
+
+    const number = phone_number.value
+    let amount_ =  1
+
+    const url = 'http://127.0.0.1:8000/api/v1/mpesa/'
+    const url_status = 'http://127.0.0.1:8000/api/v1/mpesa/status/'
+
+    amount.addEventListener('keyup', function(e){
+        amount_ = amount.value
+    })
+    
+    const formData = new FormData()
+    formData.append('amount', amount_)
+    formData.append('phone_number', number)
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';')
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+                    break
+                }
+            }
+        }
+        return cookieValue
+    }
+
+    const csrftoken = getCookie('csrftoken')
+
+    const generate_success = (response) => {
+        message.innerHTML = `<div class="alert fs-6 alert-success alert-dismissible fade show" role="alert">
+            ${response}
+        </div>`
+    }
+
+    const generate_error = (response) => {
+        message.innerHTML = `<div class="alert fs-6 alert-danger alert-dismissible fade show" role="alert">
+            ${response}.
+        </div>`
+    }
+
+    let timer = 0
+
+    const check_status = (response, checkout_id) => {
+        axios.get(`${url_status}${checkout_id}/`, {
+            headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+            let code = res.data.code
+            let description = res.data.description
+            if(code == 0){
+                generate_success(description)
+                setTimeout(() => {
+                window.location.href = '/'
+                }, 2000)
+                contribute.disabled = false
+                contribute.innerText = 'Contribute'
+            }else if(code != 0 && code != 1){
+                generate_error(description)
+                contribute.disabled = false
+                contribute.innerText = 'Contribute'
+            }else{
+                if(timer < 90){
+                setTimeout(() => {
+                    timer++
+                    check_status(response, checkout_id)
+                }, 1000)
+                }else{
+                generate_error('Transaction timed out')
+                contribute.disabled = false
+                contribute.innerText = 'Contribute'
+                timer = 0
+                }
+            }
+            })
+            .catch(err => {
+                contribute.disabled = false
+                contribute.innerText = 'Contribute'
+            })
+    }
+
+    okay.addEventListener('click', () => {
+        save.disabled = true
+        save.innerHTML = 'Processing <i class="fas fa-spinner fa-spin"></i>'
+        
+        console.log(amount_)
+
+        if(amount_ == '' ){
+            generate_error('Please enter amount/greater than 1')
+            save.disabled = false
+            save.innerText = 'Save'
+            return
+        }
+
+        axios.post(url, formData, {
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(res => {
+            let data = res.data.data.ResponseDescription
+            let checkout_id = res.data.data.CheckoutRequestID
+            generate_success(data)
+            check_status(res, checkout_id) 
+          })
+          .catch(err => {
+            console.log(err.response)
+            save.disabled = false
+            save.innerHTML = 'Contribute'
+            errors.innerHTML = '<strong>Sorry!</strong> Contribution failed. Please try again.'
+          })
+    })
+
+
+</script>
+{% endblock %}

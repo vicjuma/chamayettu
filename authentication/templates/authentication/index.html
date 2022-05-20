@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="row p-4 rounded bg-white border shadow d-md-flex align-items-center my-4">
+        <div class="col-sm-12 col-md-4 col-lg-5 mt-4 p-2">
+            <div class="border shadow p-4 rounded d-flex flex-column justify-content-center py-4">
+                <p class="text-center fw-bolder">Join Chama Yetu</p>
+                <a href="{% url 'register' %}" class="btn btn-primary btn-md rounded-pill my-2" >Sign Up</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-success rounded-pill my-4" >Sign In</a>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-7 col-lg-7 d-flex justify-content-center">
+            <img src="{% static 'img/background.png' %}" alt="background image" width="400" height="400" >
+        </div>
+    </div>
+</div>
+{% endblock %}

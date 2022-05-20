@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins&display=swap');
+
+:root{
+    --bacground-color: #478ac9;
+    --background: #c9d3dd;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.main{
+    min-height: 100vh;
+}
+
+#body{
+    background-color: var(--background);
+}
+
+#card-form{
+    min-height: 90%;
+}
+
+#registration-form{
+    width: 50%;
+    margin: auto;
+}
+#login-form{
+    width: 50%;
+    margin: auto; 
+}
+.text-asterisk{
+    color: red;
+}
+
+#input-group:hover{
+    cursor: pointer;
+}
+.datepicker{
+    padding: 5px;
+}
+
+td{
+    padding: 4px;
+}
+th.next:hover{
+    cursor: pointer;
+    background-color: #c9d3dd;
+    border-radius: 4px;
+}
+th.prev:hover{
+    cursor: pointer;
+    background-color: #c9d3dd;
+    border-radius: 4px;
+}
+
+td:hover{
+    cursor: pointer;
+    background-color: #c9d3dd;
+    border-radius: 4px;
+}
+
+@media screen and (max-width: 768px){
+    #registration-form{
+        width: 90%;
+        margin: auto;
+    }
+    #login-form{
+        width: 90%;
+        margin: auto; 
+    }   
+}

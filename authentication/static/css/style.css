@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins&display=swap');
+
+:root{
+    --bacground-color: #478ac9;
+    --background: #c9d3dd;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+#body{
+    background-color: var(--background);
+}
+
+#card-form{
+    min-height: 90%;
+}
+
+#registration-form{
+    width: 50%;
+    margin: auto;
+}
+.text-asterisk{
+    color: red;
+}
+
+@media screen and (max-width: 768px){
+    body{
+        padding: 32px;
+    }
+    #registration-form{
+        width: 95%;
+        margin: auto;
+    }   
+}

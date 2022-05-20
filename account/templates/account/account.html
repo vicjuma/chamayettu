@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<form class="row g-3 border bg-white p-4 rounded shadow mb-5" id="login-form" action="{% url 'account' %}" method="post" enctype="multipart/form-data" autocomplete="off">
+    <div class="col-12 d-flex justify-content-center">
+        {% if user.profile_image %}
+        <img src="{{ user.profile_image.url }}" class="rounded-circle border border-2" alt="logo" width="60" height="60" style="object-fit: contain;">
+        {% else %}
+        <img src="{% static 'img/avatar.jpg' %}" alt="logo" class="rounded-circle border" width="60" height="60">
+        {% endif %}
+    </div>
+    {% csrf_token %}
+    <hr/>
+        {% if errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Sorry!</strong> {{errors}}.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        {% if success %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Hurray!</strong> {{success}}.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        <div class="col-12">
+            <label for="firstname" class="form-label">Firstname</label>
+            <input type="text" class="form-control" id="firstname" name="firstname" value="{{user.firstname}}">
+        </div>
+        <div class="col-12">
+            <label for="lastname" class="form-label">Lastname</label>
+            <input type="text" class="form-control" id="lastname" name="lastname" value="{{user.lastname}}">
+        </div>
+        <div class="col-12">
+            <label for="middlename" class="form-label">Middlename</label>
+            <input type="text" class="form-control" id="middlename" name="middlename" value="{{user.middlename}}">
+        </div>
+        <div class="col-12">
+            <label for="phone_number" class="form-label">Phone number</label>
+            <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{user.phone_number}}" autocomplete="off">
+        </div>
+        <div class="col-12">
+            <label for="profile_image" class="form-label">Profile image</label>
+            <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" value="{{user.profile_image}}">
+        </div>
+        <div class="col-4">
+            <button type="submit" class="btn btn-outline-danger btn-md">Update</button>
+        </div>
+      </div>
+</form>
+{% endblock %}

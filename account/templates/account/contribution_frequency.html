@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+    <div class="container-fluid d-flex flex-row align-items-center justify-content-center mb-2 pb-2 fs-xs-6">
+        Dashboard/<a href="{% url 'step1' %}" class="text-decoration-none">step one</a>/<a href="{% url 'step2' %}" class="text-decoration-none">step two</a>/<a href="{% url 'step3' %}" class="text-decoration-none">guarantors</a>/<a href="{% url 'frequency' %}" class="text-decoration-none">frequency</a>/
+    </div>
+    <form class="row g-3 border bg-white p-4 rounded shadow mb-5" id="login-form" action="{% url 'frequency' %}" method="post" autocomplete="off">
+        <p class="fw-bolder text-center">Contribution Frequency</p>
+        {% csrf_token %}
+        <hr/>
+            {% if errors %}
+            <div id="errors" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Sorry!</strong> {{errors}}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            {% if success %}
+            <div id="success" class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Hurray!</strong> {{success}}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            <p>Please enter the codes sent</p>
+            <div class="col-12 mb-3">
+                <label for="frequency"><span class="text-asterisk">*</span>  Frequency</label>
+                <select class="form-select" aria-label="Default select example" id="frequency" name="frequency">
+                    <option selected value="WEEKLY">weekly</option>
+                    <option value="MONTHLY">monthly</option>
+                </select>
+            </div>
+            <div class="col-12 mb-3">
+                <label for="amount"><span class="text-asterisk">*</span>  Amount</label>
+                <select class="form-select" aria-label="Default select example" id="amount" name="amount">
+                    <option selected value="1000">1000</option>
+                    <option value="3000">3000</option>
+                    <option value="5000">5000</option>
+                    <option value="10000">10000</option>
+                    <option value="15000">15000</option>
+                    <option value="20000">20000</option>
+                    <option value="25000">25000</option>
+                    <option value="30000">30000</option>
+                    <option value="35000">35000</option>
+                    <option value="40000">40000</option>
+                    <option value="45000">45000</option>
+                    <option value="50000">50000</option>
+                    <option value="60000">60000</option>
+                    <option value="70000">70000</option>
+                    <option value="80000">80000</option>
+                    <option value="90000">90000</option>
+                    <option value="100000">100000</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <div id="message">
+
+                </div>
+                {% if contribution.is_saved %}
+                <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-success btn-block" name="submit" id="contribute">Contribute</button>
+                {% else %}
+                <button type="submit" class="btn btn-primary">Send</button>
+                {% endif %}
+            </div>
+          </div>
+    </form>
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Confirmation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                A mandatory ksh 200 nonrefundable fee must be paid by every new member
+                . Contribution for this month {{contribution.amount}}.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="understood">Understood</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <script>
+      const contribute = document.getElementById('contribute')
+      const understood = document.getElementById('understood')
+      const errors = document.getElementById('errors')
+      const message = document.getElementById('message')
+      const url = 'http://127.0.0.1:8000/api/v1/mpesa/'
+      const url_status = 'http://127.0.0.1:8000/api/v1/mpesa/status/'
+
+      const formData = new FormData()
+      formData.append('amount', 1)
+      formData.append('phone_number', '254724072628')
+
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';')
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+                      break
+                  }
+              }
+          }
+          return cookieValue
+      }
+      const csrftoken = getCookie('csrftoken')
+
+      const generate_success = (response) => {
+          message.innerHTML = `<div class="alert fs-6 alert-success alert-dismissible fade show" role="alert">
+              ${response}
+          </div>`
+      }
+
+      const generate_error = (response) => {
+          message.innerHTML = `<div class="alert fs-6 alert-danger alert-dismissible fade show" role="alert">
+              ${response}.
+          </div>`
+      }
+
+      let timer = 0
+
+      const check_status = (response, checkout_id) => {
+        axios.get(`${url_status}${checkout_id}/`, {
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(res => {
+            let code = res.data.code
+            let description = res.data.description
+            if(code == 0){
+              generate_success(description)
+              setTimeout(() => {
+                window.location.href = '/'
+              }, 2000)
+              contribute.disabled = false
+              contribute.innerText = 'Contribute'
+            }else if(code != 0 && code != 1){
+              generate_error(description)
+              contribute.disabled = false
+              contribute.innerText = 'Contribute'
+            }else{
+              if(timer < 60){
+                setTimeout(() => {
+                  timer++
+                  check_status(response, checkout_id)
+                }, 1000)
+              }else{
+                generate_error('Transaction timed out')
+                contribute.disabled = false
+                contribute.innerText = 'Contribute'
+                timer = 0
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err)
+            contribute.disabled = false
+            contribute.innerText = 'Contribute'
+          })
+      }
+
+      understood.addEventListener('click', () => {
+        contribute.disabled = true
+        contribute.innerHTML = 'Processing <i class="fas fa-spinner fa-spin"></i>'
+        
+        axios.post(url, formData, {
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(res => {
+            let data = res.data.data.ResponseDescription
+            let checkout_id = res.data.data.CheckoutRequestID
+            generate_success(data)
+            check_status(res, checkout_id) 
+          })
+          .catch(err => {
+            console.log(err.response)
+            contribute.disabled = false
+            contribute.innerHTML = 'Contribute'
+            errors.innerHTML = '<strong>Sorry!</strong> Contribution failed. Please try again.'
+          })
+        })
+
+    </script>
+{% endblock %}

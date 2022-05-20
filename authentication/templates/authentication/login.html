@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+    <form class="row g-3 border bg-white p-4 rounded shadow" id="login-form" action="{% url 'login' %}" method="post" autocomplete="off">
+        <p class="fw-bolder text-center">LOGIN FORM</p>
+        {% csrf_token %}
+        <hr/>
+            {% if errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Sorry!</strong> {{errors}}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Hurray!</strong> {{success}}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+        <div class="col-12 mb-3">
+            <label for="phone_number" class="form-label"><span class="text-asterisk">*</span> Phone number</label>
+            <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="+254" autocomplete="off">
+        </div>
+        <div class="col-12">
+            <label for="password" class="form-label"><span class="text-asterisk">*</span> Password</label>
+            <div class="input-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="">
+                <span class="input-group-text">
+                  <i class="fa-solid fa-eye-slash" id="togglePassword" 
+                 style="cursor: pointer"></i>
+                 </span>
+              </div>
+        </div>
+        <a href="{% url 'password_reset' %}" class="forgot-password text-decoration-none fst-italic fs-6">Forgot password?</a>
+        <div class="col-12 mb-3">
+            <button type="submit" class="btn btn-primary btn-md">Login</button>
+          </div>
+    </form>
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            if (password.type === 'password') {
+                password.type = 'text';
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            } else {
+                password.type = 'password';
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            }
+        });
+
+    </script>
+{% endblock %}

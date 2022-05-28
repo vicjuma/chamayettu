@@ -184,31 +184,14 @@ class ContibutionFrequency(models.Model):
 
 class Chama(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
-    user2 = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='user2')
-    user3 = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='user3')
-    user4 = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='user4')
-    user5 = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='user5')
-    user6 = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='user6')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     frequency = models.CharField(max_length=50)
     amount = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)
 
     @property
     def counter(self):
-        if self.user is not None:
-            return 1
-        if self.user2 is not None:
-            return 2
-        if self.user3 is not None:
-           return 3
-        if self.user4 is not None:
-            return 4
-        if self.user5 is not None:
-            return 5
-        if self.user6 is not None:
-            return 6
-        return 0
+        return Chama.objects.filter(user=self.user).count()
 
     @property
     def days(self):
@@ -223,9 +206,25 @@ class Chama(models.Model):
         return day
 
     @property
+    def days_left(self):
+        if self.frequency == 'WEEKLY':
+            return 7 - self.days
+        elif self.frequency == 'MONTHLY':
+            return 30 - self.days
+
+    # if days_left is 0 change date created to today
+    @property
+    def start_date(self):
+        if self.days_left == 0:
+            self.created = datetime.now()
+            self.save()
+            return self.created
+        else:
+            return self.created
+
+    @property
     def level(self):
         if self.frequency == 'WEEKLY':
-            print(self.days)
             if self.days >= 1 and self.days <= 7:
                 return 1
             elif self.days >= 8 and self.days <= 14:
@@ -279,3 +278,15 @@ class Chama(models.Model):
         db_table = 'chama'
         verbose_name = 'Chama'
         verbose_name_plural = 'Chama'
+
+class Points(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    points = models.IntegerField(default=0)
+
+    def __str__(self) -> str:
+        return f'{self.user.username}'
+
+    class Meta:
+        db_table = 'points'
+        verbose_name = 'Points'
+        verbose_name_plural = 'Points'

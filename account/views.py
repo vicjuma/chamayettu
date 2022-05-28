@@ -3,9 +3,9 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
-from account.models import ContibutionFrequency, FirstGuarantor, PersonalInfoStepOne, PersonalInfoStepTwo, SecondGuarantor, Chama
+from account.models import ContibutionFrequency, FirstGuarantor, PersonalInfoStepOne, PersonalInfoStepTwo, Points, SecondGuarantor, Chama
 from authentication.verify import send, check
-from daraja.models import Transaction
+from daraja.models import Savings, Transaction, TotalAmount
 
 User = get_user_model()
 
@@ -14,98 +14,76 @@ User = get_user_model()
 def home(request):
     context = {}
 
+    if not Points.objects.filter(user=request.user).exists():
+        Points.objects.create(user=request.user, points=0)
+
     try:
-        try:
-            ContibutionFrequency.objects.get(user=request.user)
-        except ContibutionFrequency.DoesNotExist:
+        ContibutionFrequency.objects.get(user=request.user)
+    except ContibutionFrequency.DoesNotExist:
             return render(request, 'account/home.html')
 
-        contribution = ContibutionFrequency.objects.get(user=request.user)
-        frequency = contribution.frequency
-        amount = contribution.amount
-        users = User.objects.all()
-        context["users"] = users
+    contribution = ContibutionFrequency.objects.get(user=request.user)
+    frequency = contribution.frequency
+    amount = contribution.amount
+    users = User.objects.all()
+    context["users"] = users
 
-        
-        phone = request.user.get_username().replace('+', '')
-        if Transaction.objects.filter(phone_number=phone).exists():
-            transactions = Transaction.objects.filter(phone_number=phone)
+    total_savings = 0
+    
+    # Get total savings
+    if Savings.objects.filter(user=request.user).exists():
+        if Savings.objects.filter(user=request.user, description="The service request is processed successfully.").exists():
+            savings = Savings.objects.filter(user=request.user, description="The service request is processed successfully.")
+            total, _ = TotalAmount.objects.get_or_create(
+                user=request.user
+            )
 
-            for transaction in transactions:
-                if transaction.status == "0" and transaction.is_confirmed == True:
-                    context["transaction"] = transaction
+            for save in savings:
+                total_savings += save.amount
+            
+            total.total = total_savings
+            total.save()
 
-        if Chama.objects.filter(user=request.user).exists(): 
-            context["chama"] = Chama.objects.get(user=request.user)
+            context["total_savings"] = total.value
+    
+    phone = request.user.get_username().replace('+', '')
+    if Transaction.objects.filter(phone_number=phone).exists():
+        transactions = Transaction.objects.filter(phone_number=phone)
+
+        for transaction in transactions:
+            if transaction.description == "The service request is processed successfully.":
+                context["transaction"] = transaction
+
+    # Get chama details
+    if Transaction.objects.filter(phone_number=phone).exists():
+        transaction = Transaction.objects.filter(phone_number=phone).latest('created')
+        if transaction.description == "The service request is processed successfully.":
+            if Chama.objects.filter(user=request.user).exists():
+                chama = Chama.objects.get(user=request.user)
+                context["chama"] = chama
+            else:
+                # check if chama with frequency and amount exists and add user to chama
+                if Chama.objects.filter(frequency=frequency, amount=amount).exists():
+                    chama = Chama.objects.get(frequency=frequency, amount=amount)
+                    chama.user = request.user
+                    context["chama"] = chama
+                    chama.save()
+                else:
+                    # create chama with frequency and amount
+                    chama = Chama.objects.create(
+                        frequency=frequency,
+                        amount=amount,
+                        user=request.user
+                    )
+                    chama.save()
+                    transaction.chama = chama
+                    transaction.save()
+                    context["chama"] = chama
+
             return render(request, 'account/home.html', context)
 
-        if Chama.objects.filter(user2=request.user).exists():
-            context["chama"] = Chama.objects.get(user2=request.user)
-            return render(request, 'account/home.html', context)
-
-        if Chama.objects.filter(user3=request.user).exists():
-            context["chama"] = Chama.objects.get(user3=request.user)
-            return render(request, 'account/home.html', context)
-
-        if Chama.objects.filter(user4=request.user).exists():
-            context["chama"] = Chama.objects.get(user4=request.user)
-            return render(request, 'account/home.html', context)
-
-        if Chama.objects.filter(user5=request.user).exists():
-            context["chama"] = Chama.objects.get(user5=request.user)
-            return render(request, 'account/home.html', context)
-
-        if Chama.objects.filter(user6=request.user).exists():
-            context["chama"] = Chama.objects.get(user6=request.user)
-            return render(request, 'account/home.html', context)
-
-        # check if there is a chama for the user based on frequency and amount\
-        if Chama.objects.filter(frequency=frequency, amount=amount).exists():
-            chamas = Chama.objects.filter(frequency=frequency, amount=amount)
-            cham = ''
-            for chama in chamas:
-                if chama.level == 1:
-                    if chama.user is None:
-                        chama.user = request.user
-                        chama.save()
-                        cham = chama
-                        break
-                    elif chama.user2 is None:
-                        chama.user2 = request.user
-                        chama.save()
-                        cham = chama
-                        break
-                    elif chama.user3 is None:
-                        chama.user3 = request.user
-                        chama.save()
-                        cham = chama
-                        break
-                elif chama.level == 0:
-                    if chama.user is None:
-                        chama.user = request.user
-                        chama.save()
-                        cham = chama
-                        break
-            context['chama'] = cham
-            return render(request, 'account/home.html', context) 
-
-        if Transaction.objects.filter(phone_number=phone).exists():
-            transaction = Transaction.objects.filter(phone_number=phone).latest('created')
-            if transaction.status == "0" and transaction.is_confirmed == True:
-                chama = Chama.objects.create(user=request.user, frequency=frequency, amount=amount)
-                chama.save()
-                context['chama'] = chama
-                return render(request, 'account/home.html', context)
-
-        return render(request, 'account/home.html', context)
-    except Chama.DoesNotExist:
-        # create a chama based on the contribution frequency and amount
-        print("creating chama")
-        chama = Chama.objects.create(user=request.user, frequency=frequency, amount=amount)
-        chama.save()
-        context['chama'] = chama
-        return render(request, 'account/home.html', context)
-
+    return render(request, 'account/home.html', context)
+    
 @login_required
 def personal_info_step1(request):
     context = {}
@@ -367,6 +345,10 @@ def account(request):
     user = User.objects.get(phone_number=request.user.phone_number)
     context['user'] = user
 
+    if Points.objects.filter(user=request.user).exists():
+        data = Points.objects.get(user=request.user)
+        context['points'] = data
+
     if request.method == 'GET':
         return render(request, 'account/account.html', context)
 
@@ -396,3 +378,19 @@ def account(request):
             context['errors'] = 'Error updating account'
 
         return render(request, 'account/account.html', context)
+
+@login_required
+def savings_contribute(request):
+    context = {}
+    total = TotalAmount.objects.get(user=request.user)
+    contribution = ContibutionFrequency.objects.get(user=request.user)
+    amount = contribution.amount
+
+    if total.value < int(amount):
+        context["errors"] = 'Request failed, insuffient savings'
+        return redirect('home')
+
+    total.deductions = amount
+    total.save()
+    context['success'] = 'Success, your contribution has been recorded'
+    return redirect('home')

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from account.models import PersonalInfoStepOne, PersonalInfoStepTwo, FirstGuarantor, SecondGuarantor, ContibutionFrequency
+from account.models import Chama, PersonalInfoStepOne, PersonalInfoStepTwo, FirstGuarantor, SecondGuarantor, ContibutionFrequency
 # Register your models here.
 @admin.register(PersonalInfoStepOne)
 class PersonalInfoStepOneAdmin(admin.ModelAdmin):
@@ -26,3 +26,5 @@ class SecondGuarantorAdmin(admin.ModelAdmin):
 class ContibutionFrequencyAdmin(admin.ModelAdmin):
     list_display = ('user', 'frequency',)
     list_filter = ('frequency',)
+
+admin.site.register(Chama)

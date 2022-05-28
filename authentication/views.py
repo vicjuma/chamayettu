@@ -8,10 +8,7 @@ User = get_user_model()
 # Create your views here.
 def index(request):
     if request.user.is_authenticated:
-
-        print('is okay')
-        print(f'is verified {request.user.is_verified}')
-        return redirect('auth/login/account/home/')
+        return redirect('home')
     return render(request, 'authentication/index.html')
 
 def register(request):
@@ -114,9 +111,58 @@ def verify_phone_number(request):
             return redirect('home')
         context['errors'] = 'Invalid verification code'
         return render(request, 'authentication/verify.html', context)
+
+def new_password(request):
+    context = {}
+
+    if request.method == 'POST':
+        phone_number = request.POST['phone_number']
+        password = request.POST['password']
+        password1 = request.POST['password1']
+
+        if password != password1:
+            context['errors'] = 'Passwords do not match'
+            return render(request, 'authentication/new_password.html', context)
+
+        user = User.objects.get(phone_number=phone_number)
+        user.set_password(password)
+        user.save()
+
+        login(request, user)
+        return redirect('home')
+
+    return render(request, 'authentication/new_password.html')
+
+def password_reset_confirm(request):
+    context = {}
+
+    if request.method == 'POST':
+        code = request.POST['code']
+        phone_number = request.POST['phone_number']
+        if check(phone_number, code):
+            context['phone_number'] = phone_number
+            return render(request, 'authentication/new_password.html', context)
         
+        context['errors'] = 'Invalid verification code'
+        return render(request, 'authentication/verify_password_reset.html', context)
+
+    return render(request, 'authentication/verify_password_reset.html')
 
 def password_reset(request):
+    context = {}
+
+    if request.method == 'POST':
+        phone_number = request.POST['phone_number']
+        response = send(phone_number)
+
+        if response is None:
+            context['errors'] = 'Error sending verification code'
+            return render(request, 'authentication/verify_password_reset.html', context)        
+
+        context['success'] = 'Verification code sent successfully'
+        context['phone_number'] = phone_number
+        return render(request, 'authentication/verify_password_reset.html', context)
+
     return render(request, 'authentication/password_reset.html')
 
 def logout_user(request):

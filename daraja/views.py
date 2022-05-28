@@ -1,10 +1,13 @@
 import json
 import requests
+from requests.exceptions import ConnectionError
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework import status
 from phonenumber_field.phonenumber import PhoneNumber
+from account.models import Points
 
 User = get_user_model()
 
@@ -25,7 +28,7 @@ class InitiateSTKPush(GenericAPIView):
         phone_number = serializer.validated_data['phone_number']
 
         paymentResponse = self.initiate_stk_push(amount, phone_number)
-
+        print(f'phone_number: {phone_number}, amount: {amount}')
         return Response(paymentResponse)
 
     def initiate_stk_push(self, amount, phone_number) -> dict:
@@ -43,10 +46,10 @@ class InitiateSTKPush(GenericAPIView):
         "Timestamp": timestamp,
         "TransactionType": "CustomerPayBillOnline",
         "Amount": amount,
-        "PartyA": phone_number,
+        "PartyA": 254724072628,
         "PartyB": settings.BUSINESS_SHORT_CODE,
-        "PhoneNumber": 254724072628,
-        "CallBackURL": "https://0f22-154-152-40-4.in.ngrok.io/api/v1/mpesa/callback/",
+        "PhoneNumber": phone_number,
+        "CallBackURL": "https://8ede-102-0-193-15.in.ngrok.io/api/v1/mpesa/callback/",
         "AccountReference": "Chama Yetu Online Payment",
         "TransactionDesc": "Contribution"
         }
@@ -57,12 +60,13 @@ class InitiateSTKPush(GenericAPIView):
         }
 
         response = requests.post(settings.API_RESOURCE_URL, json=payload, headers=headers)
-
+       
         response_text = response.text
         response_json = json.loads(response_text)
 
         if 'errorCode' in response_json:
-            return {'errors': [response_json['errorMessage']]}
+            data = {'errors': [response_json['errorMessage']]}
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
         merchant_request_id = response_json['MerchantRequestID']
         checkout_request_id = response_json['CheckoutRequestID']
@@ -136,6 +140,14 @@ class STKPushCallback(GenericAPIView):
         transaction.receipt_no = receipt_no
         transaction.is_confirmed = True
         transaction.description = description
+
+        new_phone_number = "+" + str(phone_number)
+        user = User.objects.get(phone_number=new_phone_number)
+
+        points = Points.objects.get(user=user)
+        points.points += int(amount) / 100
+
+        points.save()
 
         return transaction
     
@@ -212,7 +224,7 @@ class InitiateSTKPushSavings(GenericAPIView):
         "PartyA": phone_number,
         "PartyB": settings.BUSINESS_SHORT_CODE,
         "PhoneNumber": 254724072628,
-        "CallBackURL": "https://4c25-154-152-40-4.in.ngrok.io/api/v1/mpesa/callback/",
+        "CallBackURL": "https://8ede-102-0-193-15.in.ngrok.io/api/v1/mpesa/savings/callback/",
         "AccountReference": "Chama Yetu Online Payment",
         "TransactionDesc": "Contribution"
         }
@@ -246,8 +258,9 @@ class InitiateSTKPushSavings(GenericAPIView):
             }
         }
 
-        user = User.objects.get(phone_number=phone_number)
-
+        new_phone_number = "+" + str(phone_number)
+        user = User.objects.get(phone_number=new_phone_number)
+        
         save_data = {
             "user": user,
             "phone_number": phone_number,
@@ -305,6 +318,14 @@ class STKPushCallbackSavings(GenericAPIView):
         savings.is_confirmed = True
         savings.description = description
 
+        new_phone_number = "+" + str(phone_number)
+        user = User.objects.get(phone_number=new_phone_number)
+
+        points = Points.objects.get(user=user)
+        points.points += int(amount) / 100
+
+        points.save()
+
         return savings
     
     def callback_handler(self, data):
@@ -335,7 +356,7 @@ class STKPushCallbackSavings(GenericAPIView):
 class TransactionViewSavings(GenericAPIView):
     serializer_class = TransactionSerializer
     def get(self, request, id):
-        savings = savings.objects.get(checkout_request_id=id)
+        savings = Savings.objects.get(checkout_request_id=id)
         
         if savings.is_confirmed:
             if savings.status == 0:

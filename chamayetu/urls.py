@@ -17,8 +17,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from authentication.views import index, register, login_view, password_reset, logout_user, verify_phone_number
-from account.views import home, personal_info_step1, personal_info_step2, personal_info_step3, verify_guarantor, contribution_frequency, account
+from authentication.views import index, register, login_view, password_reset, logout_user, verify_phone_number, password_reset_confirm, new_password
+from account.views import home, personal_info_step1, personal_info_step2, personal_info_step3, verify_guarantor, contribution_frequency, account, savings_contribute
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +27,8 @@ urlpatterns = [
     path('auth/login/', login_view, name='login'),
     path('auth/register/verify/', verify_phone_number, name='verify'),
     path('auth/password_reset/', password_reset, name='password_reset'),
+    path('auth/password_new/', new_password, name='new_password'),
+    path('auth/password_reset_confirm/', password_reset_confirm, name='password_reset_confirm'),
     path('auth/logout/', logout_user, name='logout'),
     path('auth/login/account/home/', home, name='home'),
     path('auth/login/account/step1/', personal_info_step1, name='step1'),
@@ -35,6 +37,7 @@ urlpatterns = [
     path('auth/login/account/verify', verify_guarantor, name='verify_guarantor'),
     path('auth/login/account/frequency', contribution_frequency, name='frequency'),
     path('auth/login/account/user/', account, name='account'),
+    path('auth/login/account/savings/contibute/', savings_contribute, name="savings_contribute"),
     path('api/v1/', include('daraja.urls')),
 ]
 

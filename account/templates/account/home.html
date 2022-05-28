@@ -5,6 +5,18 @@
     <p class="fs-6 fst-italic">{{request.user.get_full_name}}</p>
     <p class="fs-6 fst-italic">{{request.user.get_username}}</p>
     <hr/>
+    {% if errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Sorry!</strong> {{errors}}.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Hurray!</strong> {{success}}.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
     <div class="row g-4 mt-1">
         <div class="col-sm-12 col-md-6 col-lg-6">
             <p class="fw-bold fs-5">Account Details</p>
@@ -16,9 +28,11 @@
                             <p class="card-text"></p>
                             {% if chama %}
                                 {% if chama.leave %}
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-danger btn-block">Leave</button>
-                                {% else %}
                                     <a href="{% url 'step1' %}" class="btn btn-danger px-4 my-4">Leave</a>
+                                    <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Info</a>
+                                {% else %}
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-danger btn-block">Leave</button>
+                                    <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Info</a>
                                 {% endif %}
                             {% else %}
                                 <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Join</a>
@@ -41,12 +55,22 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <h5 class="card-title fw-bolder">Savings Account</h5>
-                        <p class="card-text pt-2">Receipt: </p>
-                        <p class="card-text">Amount: </p>
-                        <p class="card-text">Date: </p>
+                        <p class="card-text py-2">Total Amount: {{total_savings}} Ksh</p>
                         <p class="card-text" id="message">
                         </p>
-                        <p class="card-text"><button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdropSave" class="btn btn-primary btn-block" id="save">Save</button></p>
+                        <p class="card-text">
+                            <div class="d-flex flex-row">
+                                <div>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdropSave" class="btn btn-primary btn-block" id="save">Save</button>
+                                </div>
+                                <div>
+                                    {% if chama %}
+                                    <a href="{% url 'savings_contribute' %}" class="btn btn-success btn-block mx-2" id="save">Contribute</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </p>
+                        <p class="card-text text-muted fst-italic" style="font-size: 12px;">N.B You can pay you conribution using your saving.</p>
                     </div>
                 </div>
             </div>
@@ -64,9 +88,22 @@
                             <p class="card-text">Amount: {{chama.amount}}</p>
                             <p class="card-text">Level: {{chama.level}}</p>
                             <p class="card-text">Next payment: {{chama.next_payment_date}}</p>
-                            <p class="card-text"><button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" class="btn bg-light broder border-2 px-4">
-                                {% if chama.counter > 1 %} Members {% else %} Member {% endif %} <span class="badge bg-danger mx-1">{{chama.counter}}</span>
-                              </button></p>
+                            <p class="card-text">Days remaining: {{chama.days_left}}</p>
+                            <p class="card-text">
+                                <div class="d-flex flex-row">
+                                    <div>
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" class="btn btn-outline-primary broder border-2 px-4">
+                                            {% if chama.counter > 1 %} Members {% else %} Member {% endif %} <span class="badge bg-danger mx-1">{{chama.counter}}</span>
+                                          </button>
+                                    </div>
+                                    <div class="mx-2">
+                                        {% if chama.days_left == 6 %}
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" class="btn btn-primary broder border-2 px-4">Contribute</button>
+                                        {% endif %}    
+                                    </div>    
+                                </div>
+                            </p>
+
                             <!-- footer -->
                             <div class="card-footer">
                                 <p class="card-text">Created: {{chama.created}}</p>
@@ -163,15 +200,10 @@
     const number = phone_number.value
     let amount_ =  1
 
-    const url = 'http://127.0.0.1:8000/api/v1/mpesa/'
-    const url_status = 'http://127.0.0.1:8000/api/v1/mpesa/status/'
-
-    amount.addEventListener('keyup', function(e){
-        amount_ = amount.value
-    })
+    const url = 'http://127.0.0.1:8000/api/v1/mpesa/savings/'
+    const url_status = 'http://127.0.0.1:8000/api/v1/mpesa/savings/status/'
     
     const formData = new FormData()
-    formData.append('amount', amount_)
     formData.append('phone_number', number)
 
     function getCookie(name) {
@@ -220,12 +252,12 @@
                 setTimeout(() => {
                 window.location.href = '/'
                 }, 2000)
-                contribute.disabled = false
-                contribute.innerText = 'Contribute'
+                save.disabled = false
+                save.innerText = 'save'
             }else if(code != 0 && code != 1){
                 generate_error(description)
-                contribute.disabled = false
-                contribute.innerText = 'Contribute'
+                save.disabled = false
+                save.innerText = 'save'
             }else{
                 if(timer < 90){
                 setTimeout(() => {
@@ -234,23 +266,23 @@
                 }, 1000)
                 }else{
                 generate_error('Transaction timed out')
-                contribute.disabled = false
-                contribute.innerText = 'Contribute'
+                save.disabled = false
+                save.innerText = 'Save'
                 timer = 0
                 }
             }
             })
             .catch(err => {
-                contribute.disabled = false
-                contribute.innerText = 'Contribute'
+                save.disabled = false
+                save.innerText = 'Save'
             })
     }
 
     okay.addEventListener('click', () => {
+        amount_ = amount.value
+        formData.append('amount', amount_)
         save.disabled = true
         save.innerHTML = 'Processing <i class="fas fa-spinner fa-spin"></i>'
-        
-        console.log(amount_)
 
         if(amount_ == '' ){
             generate_error('Please enter amount/greater than 1')
@@ -274,7 +306,7 @@
           .catch(err => {
             console.log(err.response)
             save.disabled = false
-            save.innerHTML = 'Contribute'
+            save.innerHTML = 'save'
             errors.innerHTML = '<strong>Sorry!</strong> Contribution failed. Please try again.'
           })
     })

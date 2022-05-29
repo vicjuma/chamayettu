@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
-from account.models import Chama
+# from account.models import Chama
 # Create your models here.
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, firstname, lastname, middlename, password=None, **extra_fields):
@@ -57,7 +57,7 @@ class User(AbstractUser):
     phone_number = PhoneNumberField(max_length=50, unique=True)
     profile_image = models.ImageField(upload_to=upload_profile_image, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
-    chama = models.ForeignKey(Chama, on_delete=models.CASCADE, null=True)
+    # chama = models.ForeignKey(Chama, on_delete=models.CASCADE, null=True)
 
     username = None
     email = None

@@ -30,9 +30,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
-# Application definition
 AUTH_USER_MODEL = 'authentication.User'
 
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,11 +44,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'phonenumber_field',
+    'daraja',
     'authentication',
     'account',
-    'daraja'
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

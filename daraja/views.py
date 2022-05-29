@@ -49,7 +49,7 @@ class InitiateSTKPush(GenericAPIView):
         "PartyA": 254724072628,
         "PartyB": settings.BUSINESS_SHORT_CODE,
         "PhoneNumber": phone_number,
-        "CallBackURL": "https://8ede-102-0-193-15.in.ngrok.io/api/v1/mpesa/callback/",
+        "CallBackURL": "https://5257-154-155-137-165.eu.ngrok.io/api/v1/mpesa/callback/",
         "AccountReference": "Chama Yetu Online Payment",
         "TransactionDesc": "Contribution"
         }
@@ -224,7 +224,7 @@ class InitiateSTKPushSavings(GenericAPIView):
         "PartyA": phone_number,
         "PartyB": settings.BUSINESS_SHORT_CODE,
         "PhoneNumber": 254724072628,
-        "CallBackURL": "https://8ede-102-0-193-15.in.ngrok.io/api/v1/mpesa/savings/callback/",
+        "CallBackURL": "https://5257-154-155-137-165.eu.ngrok.io/api/v1/mpesa/savings/callback/",
         "AccountReference": "Chama Yetu Online Payment",
         "TransactionDesc": "Contribution"
         }

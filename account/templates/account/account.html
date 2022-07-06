@@ -43,8 +43,13 @@
             <label for="profile_image" class="form-label">Profile image</label>
             <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" value="{{user.profile_image}}">
         </div>
-        <div class="col-4">
-            <button type="submit" class="btn btn-outline-danger btn-md">Update</button>
+        <div class="row mt-4">
+            <div class="col-2">
+                <button type="submit" class="btn btn-outline-danger btn-md">Update</button>
+            </div>
+            <div class="col-4">
+                <a href="{% url 'reset' %}" class="btn btn-outline-primary btn-md">Reset password</a>
+            </div>
         </div>
       </div>
 </form>

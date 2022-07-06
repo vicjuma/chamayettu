@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+    <div class="container-fluid d-flex flex-row align-items-center justify-content-center mb-2 pb-2  ">
+        Dashboard/<a href="{% url 'step1' %}" class="text-decoration-none">step one</a>/
+    </div>
+    <form class="row g-3 border bg-white p-4 rounded shadow mb-5" id="login-form" action="{% url 'step1' %}" method="post" autocomplete="off">
+        <p class="fw-bolder text-center">Personal Information</p>
+        {% csrf_token %}
+        <hr/>
+            {% if errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Sorry!</strong> {{ errors }}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Hurray!</strong> {{ success }}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            <div class="col-12">
+                <label for="firstname" class="form-label"><span class="text-asterisk">*</span> Firstname</label>
+                <input type="text" class="form-control" id="firstname" name="firstname" value="{{ basic.firstname }}" />
+            </div>
+            <div class="col-12">
+                <label for="middlename" class="form-label"> Middle name</label>
+                <input type="text" class="form-control" id="middlename" name="middlename" value="{{ basic.middlename }}" />
+            </div>
+            <div class="col-12">
+                <label for="lastname" class="form-label"><span class="text-asterisk">*</span> Lastname</label>
+                <input type="text" class="form-control" id="lastname" name="lastname" value="{{ basic.lastname }}" />
+            </div>
+            <div class="col-12">
+                <label for="idnumber" class="form-label"><span class="text-asterisk">*</span> ID Number</label>
+                <input type="text" class="form-control" id="idnumber" name="idnumber" value="{{ personal.idnumber }}" />
+            </div>
+            <div class="col-12 d-flex flex-column">
+                <label for="gender" class="form-label"><span class="text-asterisk">*</span> Gender</label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="gender" value="MALE" name="gender" checked />
+                        <label class="form-check-label" for="inlineCheckbox1">Male</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="gender1" value="FEMALE" name="gender" />
+                        <label class="form-check-label" for="inlineCheckbox2">Female</label>
+                      </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="birthdate"><span class="text-asterisk">*</span>Date of Birth</label>
+                <div class="input-group date" id="datepicker" data-provide="datepicker">
+                    <input type="text" class="form-control" id="date" name="dateofbirth" value="{{ personal.dateofbirth }}"/>
+                    <span class="input-group-append" id="input-group">
+                      <span class="input-group-text bg-light d-block">
+                        <i class="fa fa-calendar"></i>
+                      </span>
+                    </span>
+                  </div>
+            </div>
+            <div class="col-12">
+                <label for="status"><span class="text-asterisk">*</span> Marital Status</label>
+                <select class="form-select" aria-label="Default select example" id="status" name="status" value="{{ personal.status }}">
+                    <option selected value="OTHER">Other</option>
+                    <option value="MARRIED">Married</option>
+                    <option value="SINGLE">Single</option>
+                    <option value="DIVORCED">Divorced</option>
+                    <option value="WIDOWED">Widowed</option>
+                  </select>
+            </div>
+            <div class="col-12">
+                <label for="education"><span class="text-asterisk">*</span> Education</label>
+                <select class="form-select" aria-label="Default select example" name="education" value="{{ personal.education }}">
+                    <option selected value="PRIMARY_SCHOOL">Primary School</option>
+                    <option value="HIGH_SCHOOL">High School</option>
+                    <option value="CERTIFICATE">Certificate</option>
+                    <option value="DIPLOMA">Diploma</option>
+                    <option value="GRADUATE">Graduate</option>
+                    <option value="POST_GRADUATE">Post Graduate</option>
+                  </select>
+            </div>
+            <div class="col-12">
+                <label for="resident"><span class="text-asterisk">*</span> Resident</label>
+                <select class="form-select" aria-label="Default select example" name="resident" value="{{ personal.resident }}">
+                    <option selected value="RESIDENT">Resident</option>
+                    <option value="NON_RESIDENT">Non Resident</option>
+                  </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-md">Next</button>
+            </div>
+    </form>
+{% endblock content %}

@@ -1,14 +1,10 @@
-import datetime
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
-
-from account.models import ContibutionFrequency, FirstGuarantor, PersonalInfoStepOne, PersonalInfoStepTwo, Points, SecondGuarantor, Chama
-from authentication.verify import send, check
+from django.contrib.auth import get_user_model, login
+from account.models import ContibutionFrequency, Points, Chama
 from daraja.models import Savings, Transaction, TotalAmount
 
 User = get_user_model()
-
 # Create your views here.
 @login_required
 def home(request):
@@ -58,258 +54,55 @@ def home(request):
     if Transaction.objects.filter(phone_number=phone).exists():
         transaction = Transaction.objects.filter(phone_number=phone).latest('created')
         if transaction.description == "The service request is processed successfully.":
-            if Chama.objects.filter(user=request.user).exists():
-                chama = Chama.objects.get(user=request.user)
-                context["chama"] = chama
-            else:
-                # check if chama with frequency and amount exists and add user to chama
-                if Chama.objects.filter(frequency=frequency, amount=amount).exists():
-                    chama = Chama.objects.get(frequency=frequency, amount=amount)
-                    chama.user = request.user
-                    context["chama"] = chama
-                    chama.save()
-                else:
-                    # create chama with frequency and amount
-                    chama = Chama.objects.create(
-                        frequency=frequency,
-                        amount=amount,
-                        user=request.user
-                    )
-                    chama.save()
+            # check if chama with frequency and amount exists and add user to chama
+            user = User.objects.get(id=request.user.id)
+            if Chama.objects.filter(frequency=frequency, amount=amount).exists():
+                chama = Chama.objects.filter(frequency=frequency, amount=amount).order_by('-created').first()
+                members = User.objects.filter(chama_id=chama.id).count()
+                if chama.group_complete == False:
+                    user.chama = chama
+                    user.save()
                     transaction.chama = chama
                     transaction.save()
                     context["chama"] = chama
+                    members_count = User.objects.filter(chama_id=chama.id).count()
+                    context["count"] = members_count
+                    if members_count == 3:
+                        chama.group_complete = True;
+                        chama.save()
+                        members_count = User.objects.filter(chama_id=chama.id).count()
+                        context["count"] = members_count
+                if chama.group_complete == True:
+                    chama = Chama.objects.create(
+                    frequency=frequency,
+                    amount=amount
+                )
+                    user.chama_id = chama.id
+                    transaction.chama = chama
+                    transaction.save()
+                    chama.save()
+                    user.save()
+                    context["chama"] = chama
+                    members_count = User.objects.filter(chama_id=chama.id).count()
+                    context["count"] = members_count
+            else:
+                # create chama with frequency and amount
+                chama = Chama.objects.create(
+                    frequency=frequency,
+                    amount=amount
+                )
+                user.chama_id = chama.id
+                transaction.chama = chama
+                transaction.save()
+                chama.save()
+                user.save()
+                context["chama"] = chama
+                members_count = User.objects.filter(chama_id=chama.id).count()
+                context["count"] = members_count
 
             return render(request, 'account/home.html', context)
 
     return render(request, 'account/home.html', context)
-    
-@login_required
-def personal_info_step1(request):
-    context = {}
-    if PersonalInfoStepOne.objects.filter(user=request.user).exists():
-        data = PersonalInfoStepOne.objects.get(user=request.user)
-        if data is not None:
-            context['personal'] = data
-
-    if request.method == 'POST':
-        firstname = request.POST['firstname']
-        lastname = request.POST['lastname']
-        middlename = request.POST['middlename']
-        dateofbirth = request.POST['dateofbirth']
-        idnumber = request.POST['idnumber']
-        education = request.POST['education']
-        status = request.POST['status']
-        gender = request.POST['gender']
-        resident = request.POST['resident']
-
-        if firstname == '' or lastname == '' or middlename == '' or dateofbirth == '' or idnumber == '' or status == '' or resident == '':
-            context['errors'] = 'Please fill in all fields'
-            return render(request, 'account/step1.html', context)
-
-        if PersonalInfoStepOne.objects.filter(user=request.user).exists():
-            # update data
-            data = PersonalInfoStepOne.objects.get(user=request.user)
-            data.firstname = firstname
-            data.lastname = lastname
-            data.middlename = middlename
-            data.idnumber = idnumber
-            data.save()
-
-            
-            return redirect('step2')
-
-        dateofbirth = datetime.datetime.strptime(dateofbirth, '%m/%d/%Y').strftime('%Y-%m-%d')
-
-        personal = PersonalInfoStepOne.objects.create(
-            user=request.user,
-            firstname=firstname,
-            middlename=middlename,
-            lastname=lastname,
-            idnumber=idnumber,
-            status=status,
-            resident=resident,
-            dateofbirth=dateofbirth,
-            gender=gender,
-            education=education,
-            is_complete=True
-        )
-        personal.save()         
-
-        return redirect('step2')
-
-    return render(request, 'account/step1.html', context)
-
-@login_required
-def personal_info_step2(request):
-    context = {}
-    if PersonalInfoStepTwo.objects.filter(user=request.user).exists():
-        data = PersonalInfoStepTwo.objects.get(user=request.user)
-        context['personal'] = data
-
-    if request.method == 'POST':
-        email = request.POST['email']
-        employment = request.POST['employment']
-        income = request.POST['income']
-
-        if email == '':
-            context['errors'] = 'Please fill in all fields'
-            return render(request, 'account/step2.html', context)
-
-        if PersonalInfoStepTwo.objects.filter(user=request.user).exists():
-            # update data
-            data = PersonalInfoStepTwo.objects.get(user=request.user)
-            data.email = email
-            data.save()
-            return redirect('step3')
-
-        personal = PersonalInfoStepTwo.objects.create(
-            user=request.user,
-            email=email,
-            employment=employment,
-            income=income,
-        )
-
-        personal.save()
-        return redirect('step3')
-
-    return render(request, 'account/step2.html', context)
-
-@login_required
-def personal_info_step3(request):
-    context = {}
-
-    if FirstGuarantor.objects.filter(user=request.user).exists():
-        data = FirstGuarantor.objects.get(user=request.user)
-        context['guarantor'] = data
-
-    if SecondGuarantor.objects.filter(user=request.user).exists():
-        data = SecondGuarantor.objects.get(user=request.user)
-        context['guarantor1'] = data
-
-    if request.method == 'POST':
-        firstname = request.POST['firstname']
-        lastname = request.POST['lastname']
-        phone_number = request.POST['phone_number']
-        relationship = request.POST['relationship']
-
-        firstname1 = request.POST['firstname1']
-        lastname1 = request.POST['lastname1']
-        phone_number1 = request.POST['phone_number1']
-        relationship1 = request.POST['relationship1']
-
-        if firstname == '' or lastname == '' or phone_number == '':
-            context['errors'] = 'Please fill in all fields of guartor(1)'
-            return render(request, 'account/step3.html', context)
-
-        if firstname1 == '' or lastname1 == '' or phone_number1 == '':
-            context['errors'] = 'Please fill in all fields of guartor(2)'
-            return render(request, 'account/step3.html', context)
-
-        if FirstGuarantor.objects.filter(user=request.user).exists() and SecondGuarantor.objects.filter(user=request.user).exists():
-            # update data
-            data = FirstGuarantor.objects.get(user=request.user)
-            data.firstname = firstname
-            data.lastname = lastname
-            data.phone_number = phone_number
-            data.save()
-
-            data = SecondGuarantor.objects.get(user=request.user)
-            data.firstname = firstname1
-            data.lastname = lastname1
-            data.phone_number = phone_number1
-            data.save()
-
-            response = send(phone_number)
-            response2 = send(phone_number1)
-
-            if response is None:
-                context['errors'] = 'Fail to send verification code for guarantor(1)'
-                return render(request, 'account/verify_guarantor.html', context)
-            
-            if response2 is None:
-                context['errors'] = 'Fail to send verification code for guarantor(2)'
-                return render(request, 'account/verify_guarantor.html', context)
-            
-            return redirect('verify_guarantor')
-
-        guarantor1 = FirstGuarantor.objects.create(
-            user=request.user,
-            firstname=firstname,
-            lastname=lastname,
-            phone_number=phone_number,
-            relationship=relationship,
-        )
-
-        guarantor1.save()
-
-        guarantor2 = SecondGuarantor.objects.create(
-            user=request.user,
-            firstname=firstname1,
-            lastname=lastname1,
-            phone_number=phone_number1,
-            relationship=relationship1,
-        )
-
-        guarantor2.save()
-
-        response = send(phone_number)
-        response2 = send(phone_number1)
-
-        if response is None:
-            context['errors'] = 'Fail to send verification code for guarantor(1)'
-            return render(request, 'account/verify_guarantor.html', context)
-        
-        if response2 is None:
-            context['errors'] = 'Fail to send verification code for guarantor(2)'
-            return render(request, 'account/verify_guarantor.html', context)
-
-        context['success'] = 'Verification code has been sent to guarantor(s)'
-        return render(request, 'account/verify_guarantor.html', context)
-    
-    return render(request, 'account/step3.html', context)
-
-
-@login_required
-def verify_guarantor(request):
-    context = {}
-
-    if request.method == 'POST':
-        code = request.POST['code']
-        code1 = request.POST['code1']
-
-        if code == '' or code1 == '':
-            context['errors'] = 'Please fill in the code'
-            return render(request, 'account/verify_guarantor.html', context)
-
-        if FirstGuarantor.objects.filter(user=request.user).exists():
-            data = FirstGuarantor.objects.get(user=request.user)
-            phone_number = data.phone_number
-            phone_number = str(phone_number)
-
-            if check(phone_number, code):
-                data.is_verified = True
-                data.save()
-            else:
-                context['errors'] = 'Verification code is incorrect'
-                return render(request, 'account/verify_guarantor.html', context)
-
-        if SecondGuarantor.objects.filter(user=request.user).exists():
-            guarantor = SecondGuarantor.objects.get(user=request.user)
-            phone_number = guarantor.phone_number
-            phone_number = str(phone_number)
-            if check(phone_number, code1):
-                guarantor.is_verified = True
-                guarantor.save()
-
-                context['success'] = 'Phone number verified successfully'
-            else:
-                context['errors'] = 'Verification code is incorrect (2)'
-                return render(request, 'account/verify_guarantor.html', context)
-
-        return redirect('frequency')
-
-    return render(request, 'account/verify_guarantor.html', context)
 
 
 @login_required
@@ -394,3 +187,36 @@ def savings_contribute(request):
     total.save()
     context['success'] = 'Success, your contribution has been recorded'
     return redirect('home')
+
+
+def reset_password(request):
+    context = {}
+    if request.method == 'POST':
+        oldpassword = request.POST['oldpassword']
+        phone_number = request.POST['phone_number']
+        password = request.POST['password']
+        password1 = request.POST['password1']
+
+        if oldpassword == '' or password == '' or password1 == '':
+            context['errors'] = 'Please insert all fields'
+            return render(request, 'account/password_reset.html', context)
+
+        if password != password1:
+            context['errors'] = 'Passwords do not match'
+            return render(request, 'account/password_reset.html', context)
+        
+        user = User.objects.get(phone_number=phone_number)
+        if user.check_password(oldpassword) == False:
+            context['errors'] = 'Invalid password'
+            return render(request, 'account/password_reset.html', context)
+
+        user.set_password(password)
+        user.save()
+        login(request, user)
+        context["success"] = "Password successfully updated"
+
+    return render(request, 'account/password_reset.html', context)
+
+def handle_404(request, exception):
+    return render(request, '404.html')
+

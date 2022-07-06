@@ -1,0 +1,23 @@
+/* #registration-h1 {
+    font-size: 14px;
+} */
+
+#phone_number_0,
+#phone_number1_0 {
+    display: none;
+}
+
+#text-black {
+    border-radius: 25px;
+}
+
+#index-img {
+    background-position: center;
+    margin: auto;
+}
+
+#list-terms {
+    list-style-type: '→';
+    position: absolute;
+    top: 1;
+}

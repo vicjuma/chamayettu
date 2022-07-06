@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<section class="vh-100">
+	<div class="container h-100">
+		<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-lg-12 col-xl-11">
+				<div class="card text-black" id="text-black">
+					<div class="card-body p-md-5">
+						<div class="row justify-content-center">
+							<div class="col-md-10 col-lg-6 col-xl-5 order-1 order-lg-2">
+
+									<p class="text-center h1 fw-bold mx-4 mx-md-4">404</p>
+									<div  class="my-4 mx-4">
+										<p class="fw-bolder fst-italic">There seems to be nothing here. Go back to the homepage</p>
+										<div>
+											Go back to the <a href="{% url 'home' %}">Home</a> Page
+										</div>
+									</div>
+							</div>
+							<div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-2 order-lg-1">
+
+								<img src="{% static 'img/404.png' %}"
+									class="img-fluid" height="auto" width="auto" alt="Sample image" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock content %}

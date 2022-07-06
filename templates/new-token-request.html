@@ -1,0 +1,12 @@
+{% extends "base_verify.html" %}
+<form method='POST' >
+  {% csrf_token %}
+
+  <fieldset>
+      {{ form }}
+  </fieldset>
+
+  <div style="margin-top: 50px;">
+      <button class="btn btn-outline-info" type="submit">Request New Email</button>
+  </div>
+</form>

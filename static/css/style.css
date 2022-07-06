@@ -1,73 +1,116 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins&display=swap');
-
-:root{
+:root {
     --bacground-color: #478ac9;
     --background: #c9d3dd;
 }
 
-body{
+body {
     margin: 0;
     padding: 0;
 }
 
-.main{
+.main {
     min-height: 100vh;
 }
 
-#body{
+#body {
     background-color: var(--background);
 }
 
-#card-form{
+#card-form {
     min-height: 90%;
 }
 
-#registration-form{
+#registration-form {
     width: 50%;
     margin: auto;
 }
-#login-form{
+
+#login-form {
     width: 50%;
-    margin: auto; 
+    margin: auto;
 }
-.text-asterisk{
+
+.text-asterisk {
     color: red;
 }
 
-#input-group:hover{
+div ul.errorlist li {
+    list-style-type: none;
+    display: inline;
+}
+
+#accept_terms {
+    color: red;
+}
+
+.errorlist {
+    color: red;
+}
+
+.errorlist li {
+    margin-left: 0;
+    margin-left: -2rem;
+}
+
+#id_accept_terms {
+    margin-top: .4rem;
+    margin-right: .4rem;
+}
+
+#input-group:hover {
     cursor: pointer;
 }
-.datepicker{
+
+#regform input:focus {
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.datepicker {
     padding: 5px;
 }
 
-td{
+td {
     padding: 4px;
 }
-th.next:hover{
-    cursor: pointer;
-    background-color: #c9d3dd;
-    border-radius: 4px;
-}
-th.prev:hover{
+
+th.next:hover {
     cursor: pointer;
     background-color: #c9d3dd;
     border-radius: 4px;
 }
 
-td:hover{
+th.prev:hover {
     cursor: pointer;
     background-color: #c9d3dd;
     border-radius: 4px;
 }
 
-@media screen and (max-width: 768px){
-    #registration-form{
+td:hover {
+    cursor: pointer;
+    background-color: #c9d3dd;
+    border-radius: 4px;
+}
+
+#modal-scrollbar {
+    /* add webkit-scrollbar-thumb */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: 'scroll';
+    scrollbar-width: 5px;
+    scrollbar-color: #478ac9;
+}
+
+@media screen and (max-width: 768px) {
+    #registration-form {
         width: 90%;
         margin: auto;
     }
-    #login-form{
+    #login-form {
         width: 90%;
-        margin: auto; 
-    }   
+        margin: auto;
+    }
 }

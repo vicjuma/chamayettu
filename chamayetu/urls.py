@@ -17,29 +17,33 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from authentication.views import index, register, login_view, password_reset, logout_user, verify_phone_number, password_reset_confirm, new_password
-from account.views import home, personal_info_step1, personal_info_step2, personal_info_step3, verify_guarantor, contribution_frequency, account, savings_contribute
+from authentication.views import forgetPass, index, register, login_view, logout_user, new_password, activate, forgetPass, CompletePasswordReset
+from account.views import handle_404, home, contribution_frequency, account, savings_contribute, reset_password
+from step1.views import personal_info_step1
+from step2.views import personal_info_step2
+from step3.views import personal_info_step3
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('auth/register/', register, name='register'),
     path('auth/login/', login_view, name='login'),
-    path('auth/register/verify/', verify_phone_number, name='verify'),
-    path('auth/password_reset/', password_reset, name='password_reset'),
-    path('auth/password_new/', new_password, name='new_password'),
-    path('auth/password_reset_confirm/', password_reset_confirm, name='password_reset_confirm'),
+    path('auth/password_reset/', forgetPass, name='password_reset'),
+    path('auth/password_new/<uidb64>/<token>', CompletePasswordReset, name='new_password'),
+    path('auth/reset/', reset_password, name='reset'),
     path('auth/logout/', logout_user, name='logout'),
+    path('activate/<uidb64>/<token>/', activate, name='activate'),
     path('auth/login/account/home/', home, name='home'),
     path('auth/login/account/step1/', personal_info_step1, name='step1'),
     path('auth/login/account/step2/', personal_info_step2, name='step2'),
     path('auth/login/account/step3/', personal_info_step3, name='step3'),
-    path('auth/login/account/verify', verify_guarantor, name='verify_guarantor'),
     path('auth/login/account/frequency', contribution_frequency, name='frequency'),
     path('auth/login/account/user/', account, name='account'),
     path('auth/login/account/savings/contibute/', savings_contribute, name="savings_contribute"),
     path('api/v1/', include('daraja.urls')),
-]
+    path('verification/', include('verify_email.urls')),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+handle_404 = 'account.views.handle_404'
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

@@ -28,7 +28,6 @@ class InitiateSTKPush(GenericAPIView):
         phone_number = serializer.validated_data['phone_number']
 
         paymentResponse = self.initiate_stk_push(amount, phone_number)
-        print(f'phone_number: {phone_number}, amount: {amount}')
         return Response(paymentResponse)
 
     def initiate_stk_push(self, amount, phone_number) -> dict:
@@ -44,12 +43,12 @@ class InitiateSTKPush(GenericAPIView):
         "BusinessShortCode": settings.BUSINESS_SHORT_CODE,
         "Password": password,
         "Timestamp": timestamp,
-        "TransactionType": "CustomerPayBillOnline",
+        "TransactionType": "CustomerBuyGoodsOnline",
         "Amount": amount,
-        "PartyA": 254724072628,
-        "PartyB": settings.BUSINESS_SHORT_CODE,
+        "PartyA": phone_number,
+        "PartyB": 9713209,
         "PhoneNumber": phone_number,
-        "CallBackURL": "https://5257-154-155-137-165.eu.ngrok.io/api/v1/mpesa/callback/",
+        "CallBackURL": "https://chamayettu.co.ke/api/v1/mpesa/callback/",
         "AccountReference": "Chama Yetu Online Payment",
         "TransactionDesc": "Contribution"
         }
@@ -58,6 +57,7 @@ class InitiateSTKPush(GenericAPIView):
         "Authorization": "Bearer " + access_token,
         "Content-Type": "application/json"
         }
+
 
         response = requests.post(settings.API_RESOURCE_URL, json=payload, headers=headers)
        
@@ -219,12 +219,12 @@ class InitiateSTKPushSavings(GenericAPIView):
         "BusinessShortCode": settings.BUSINESS_SHORT_CODE,
         "Password": password,
         "Timestamp": timestamp,
-        "TransactionType": "CustomerPayBillOnline",
+        "TransactionType": "CustomerBuyGoodsOnline",
         "Amount": amount,
         "PartyA": phone_number,
-        "PartyB": settings.BUSINESS_SHORT_CODE,
-        "PhoneNumber": 254724072628,
-        "CallBackURL": "https://5257-154-155-137-165.eu.ngrok.io/api/v1/mpesa/savings/callback/",
+        "PartyB": 9713209,
+        "PhoneNumber": phone_number,
+        "CallBackURL": "https://chamayettu.co.ke/api/v1/mpesa/savings/callback/",
         "AccountReference": "Chama Yetu Online Payment",
         "TransactionDesc": "Contribution"
         }

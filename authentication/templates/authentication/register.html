@@ -1,57 +1,360 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
 {% load static %}
-    <form class="row g-3 border bg-white p-4 my-4 rounded shadow container mx-auto" id="registration-form" action="{% url 'register' %}" method="post" autocomplete="off">
-        <p class="fw-bolder text-center">REGISTRATION FORM</p>
-        {% csrf_token %}
-        <hr/>
-            {% if errors %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Sorry!</strong> {{errors}}.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endif %}
-        <div class="col-12">
-            <label for="firstname" class="form-label"><span class="text-asterisk">*</span> Firstname</label>
-            <input type="text" class="form-control" id="firstname" name="firstname">
-        </div>
-        <div class="col-12">
-            <label for="middlename" class="form-label"><span class="text-asterisk"></span> Middle name</label>
-            <input type="text" class="form-control" id="middlename" name="middlename">
-        </div>
-        <div class="col-12">
-            <label for="lastname" class="form-label"><span class="text-asterisk">*</span> Lastname</label>
-            <input type="text" class="form-control" id="lastname" name="lastname">
-        </div>
-        <div class="col-12">
-            <label for="phone_number" class="form-label"><span class="text-asterisk">*</span> Phone number</label>
-            <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="+254">
-        </div>
-        <div class="col-12">
-            <label for="phone_number1" class="form-label"><span class="text-asterisk">*</span>Confirm Phone number</label>
-            <input type="tel" class="form-control" id="phone_number1" name="phone_number1" placeholder="+254">
-        </div>
-        <div class="col-12">
-            <label for="password" class="form-label"><span class="text-asterisk">*</span> Password</label>
-            <div class="input-group mb-3">
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="">
-                <span class="input-group-text">
-                  <i class="fa-solid fa-eye-slash" id="togglePassword" 
-                 style="cursor: pointer"></i>
-                 </span>
+<section class="vh-100">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-12 col-xl-11">
+          <div class="card text-black" id="text-black">
+            <div class="card-body p-md-5">
+              <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-6 order-2 order-lg-1">
+  
+                  <p class="text-center h4 fw-bold mx-4 mx-md-4">Create Account</p>
+  
+                  <form class="mx-1 mx-md-4" id="regform" action="{% url 'register' %}" method="post" autocomplete="off" novalidate>
+                    {% csrf_token %}
+                    <hr/>
+                    <div class="d-flex flex-row align-items-center mb-2">
+                      <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        {% if form.phone_number.errors %}
+                            {{ form.phone_number.errors }}
+                        {% endif %}
+                        {{ form.phone_number }}
+                        <label class="form-label" for="form3Example1c">Phone Number</label>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-2">
+                      <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        {% if form.phone_number1.errors %}
+                            {{ form.phone_number1.errors }}
+                        {% endif %}
+                        {{ form.phone_number1 }}
+                        <label class="form-label" for="form3Example3c">Confirm Phone</label>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-2">
+                      <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        {% if form.email.errors %}
+                            {{ form.email.errors }}
+                        {% endif %}
+                        {{ form.email }}
+                        <label class="form-label" for="form3Example4c">Email</label>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-2">
+                      <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        {% if form.password1.errors %}
+                            {{ form.password1.errors }}
+                        {% endif %}
+                        {{ form.password1 }}
+                        <label class="form-label" for="form3Example4cd">Password</label>
+                      </div>
+                    </div>
+
+                    <div class="d-flex flex-row align-items-center mb-2">
+                        <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                            {% if form.password2.errors %}
+                                {{ form.password2.errors }}
+                            {% endif %}
+                            {{ form.password2 }}
+                          <label class="form-label" for="form3Example4cd">Confirm Password</label>
+                        </div>
+                      </div>
+                      {% if form.accept_terms.errors %}
+                      <p id="accept_terms">You must accept the terms and conditions to proceed</p>
+                    {% endif %}
+                    <div class="form-check d-flex justify-content-start mb-3">
+                        {{ form.accept_terms }}
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Accept ChamaYettu <small><a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdropSaveTerms">Terms and Conditions</a></small>
+                        </label>
+                    </div>
+  
+                    <div class="d-flex justify-content-start mx-4 mb-3 mb-lg-4">
+                      <button type="submit" class="btn btn-primary btn-md">Register</button>
+                    </div>
+  
+                  </form>
+                  <small>Already have an account? <a href="{% url 'login' %}">Login</a></small>
+                </div>
+                <div class="col-md-10 col-lg-4 col-xl-6 d-flex align-items-center order-1 order-lg-2">
+  
+                  <img src="{% static 'img/OnlineBanking.png' %}"
+                    class="img-fluid" height="auto" width="auto" alt="Sample image" />
+  
+                </div>
               </div>
-        </div>
-        <div class="col-12">
-            <label for="password" class="form-label"><span class="text-asterisk">*</span> Confirm Password</label>
-            <input type="password" class="form-control" id="password" name="confirmPassword" autocomplete="off">
-        </div>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Register</button>
+            </div>
           </div>
-    </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="modal fade" id="staticBackdropSaveTerms" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Terms and Conditions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body px-4" id="modal-scrollbar"/>
+            <p class="fw-bold fs-5">1. SUMMARY: YOUR ACCEPTANCE OF CHAMAYETTU TERMS AND CONDITIONS</p>
+            <p class="lh-base text-start">
+                1.1 You must carefully read and understand the Terms and Conditions set out in this Agreement before using the Services, as they set out the terms of your use of the website and the operation of your Account. A full list of Definitions of the Defined Terms referred to in this Agreement can be found at Section 20. 
+                1.2 By using our website you agree to comply with and be bound by these Terms and Conditions governing providing the Services and you will be deemed to accept and agree with the Terms and Conditions of this Agreement upon clicking the “Accept” button when you are asked to confirm that you have read, understood and agreed to abide by this Agreement. If you do not agree with the terms of this Agreement, please do not click the “Accept” button. Please note that you will not be able to access the Services and get license to use the website if you do not click “Accept”. 
+                1.3 If we make any changes to these Terms and Conditions we will notify you at least 30 days before the effective date of the changes through and/or our social media platforms and/or our website and/or SMS/email communications with you. Your continued use of the Services constitutes your agreement to be bound by any changes to our terms and conditions. 
+                1.4 By using the website, you consent to us collecting and using technical information about the Equipment and related software, hardware and peripherals for Services that are internet-based or wireless to improve our products and to provide any Services to you. 
+                1.5 If you use the Services, this action will also constitute your agreement and consent for ChamaYettu, our affiliates and licensees to transmit, collect, retain, maintain, process and use the data you provide during your application process to determine our credit scoring services or to improve our Services and/or your experience while using the website in accordance with the Privacy Policy and Privacy Notice.
+                1.6 An explanation of our Credit Advances and Fees can be found at Section 6 and the consequences if you default in paying your chama’s contribution fees in accordance with these terms and conditions is set out at Section 7 below. 
+                1.7 You may contact ChamaYettu at any time via email at info@chamayettu.co.ke. If you wish to opt-out from receiving direct marketing communications from us please write to us at info@chamaayettu.co.ke
+            </p>
+            <p class="fw-bold fs-5">2. TERMS OF THE LICENCE TO USE THE WEBSITE</p>
+            <p class="fw-bold fs-5">Scope</p>
+            <p class="lh-base text-start">
+                2.1 This Agreement is a financial services and an end-user license agreement between the person whose duly registered mobile phone number, Personal Data and other details were used to register with and utilize the ChamaYettu website. 
+                2.2 In consideration of you agreeing to abide by the terms of this Agreement, we grant you a non-transferable, non-exclusive license to use the website on your Equipment, subject to this Agreement. We reserve all other rights.
+
+                2. 3. Except as expressly set out in this Agreement, you agree not to:
+                2.3.1 rent, lease, sub-license, loan, translate, merge, adapt, vary or modify the website;
+                2.3.2 make alterations to, or modifications of, the whole or any part of the website, or permit the website or any part of it to be combined with, or become incorporated in, any other programs;
+                2.3.3 disassemble, decompile, reverse-engineer or create derivative works based on the whole or any part of the website or attempt to do any such thing except to the extent that such actions cannot be prohibited because they are essential for the purpose of achieving inter-operability of the website with another software program, and provided that the information obtained by you during such activities is: 
+                2.3.3.1 not unnecessarily disclosed or communicated without our prior written consent to any third party;
+                2.3.3.2 not used to create any software that is substantially similar to the Website;
+                2.3.3.3 to include our copyright notice on all entire and partial copies you make of the Website on any medium;
+                2.3.3.4 provide or otherwise make available the Website in whole or in part (including object and source code), in any form to any person without our prior written consent. 
+                2.4 You also agreed to comply with all technology control or export laws and regulations that website to the technology used or supported by the Website or any Services, together with the License Restrictions.
+            </p>
+            <p class="fw-bold fs-5">License Restrictions</p>
+            <p class="lh-base text-start">
+                2.5 You are not permitted to do the following (as it would be a breach of this Agreement):
+                2.5.1 use the Website or any Service in any unlawful manner, for any unlawful purpose, or in any manner inconsistent with this Agreement, or act fraudulently or maliciously, for example, by hacking into or inserting malicious code, including viruses, or harmful data, into the Website, any Service or any operating system;
+                2.5.2 infringe our intellectual property rights or those of any third party in relation to your use of the Website or any Service, including the submission of any material (to the extent that such use is not licensed by this Agreement);
+                2.5.3 transmit any material that is defamatory, offensive or otherwise objectionable in relation to your use of the Website or any Service;
+                2.5.4 use the Website or any Service in a way that could damage, disable, overburden, impair or compromise our systems or security or interfere with other users; and
+                2.5.5 collect or harvest any information or data from any Service or our systems or attempt to decipher any transmissions to or from the servers running any Service.
+            </p>
+            <p class="fw-bold fs-5">3. INTELLECTUAL PROPERTY RIGHTS</p>
+            <p class="lh-base text-start">3.1 You acknowledge that all intellectual property rights in the Website and the Technology anywhere in the world belong to ChamaYettu or our licensors, that rights in the Website are licensed (not sold) to you, and that you have no rights in, or to, the Website or the Technology other than the right to use each of them in accordance with the terms of this Agreement. You acknowledge that you have no right to have access to the Website in source-code form.
+            </p>
+            <p class="fw-bold fs-5">4. USE OF THE SERVICES</p>
+            <p class="lh-base text-start">
+                4.1 Our Services can only be utilized by persons over the age of 18. ChamaYettu reserves the right to verify the authenticity and status of your Mobile Money Account with the relevant Mobile Money Provider.
+                4.2 Our acceptance of your application for joining a chama will be displayed on the Website. You hereby acknowledge and accept that the acceptance by Us of your application for joining a chama does not create any contractual relationship between you and Us beyond the Terms and Conditions that apply to your Mobile Money Account from time to time.
+                4.3 We reserve the right to decline your application for joining a chama at our sole and absolute discretion and without assigning any reason or giving any notice thereto, except through a simple notification that may be displayed on the Website.
+            </p>
+            <p class="fw-bold fs-5">5. OUR USE OF YOUR PERSONAL DATA</p>
+            <p class="lh-base text-start">
+                5.1 ChamaYettu upholds the importance of protecting the privacy of all information provided by users of its Website. We use your Personal Data and Relevant Information in accordance with our Privacy Policy and the Kenya Data Protection Act, 2019. Please take the time to read our Privacy Policy and the Website’s Privacy Notice as they set out the consents we may require from you and ask you to provide on; how we collect, use, store and share your Customer Information. In addition to the links within this Agreement, copies of the Privacy Policy and Privacy Notice are also available on the ChamaYettu Website and the ChamaYettu Website (https://Chamayettu.co.ke/). You may also request for copies of the above and these Terms and Conditions by writing to us via email at info@chamayettu.co.ke
+                5.2 The terms of ChamaYettu’s Privacy Policy and Privacy Notice are incorporated into the Terms and Conditions of this Agreement. By downloading the Website and clicking the “Accept” option with respect to these Terms and Conditions you will be required to have also read and understood the provisions of the Privacy Policy and Privacy Notice.
+                5.3 ChamaYettu collects and processes personally identifiable information (Personal Data) as set out in the Privacy Notice.
+                5.4 You acknowledge and agree that ChamaYettu’s verification of your Personal Data and Relevant Information shall be as specified in the relevant Privacy Notice and Privacy Policy. 
+                5.5 You acknowledge and agree to our use of automated processing to determine your eligibility for our Services based on the Personal Data and Relevant Information that we collect. You may object to the automated processing of your Personal Data, but doing so will prevent us from providing you with our Services. If you wish to request a reconsideration of an automated decision, you may contact us via email at info@chamayettu.co.ke
+                5.6 You acknowledge and agree that your Personal Data collected by ChamaYettu may be stored and processed in any other country in which ChamaYettu or its agents maintain facilities. By using the Service, you consent to any such transfer of information outside of Kenya
+                5.7 You acknowledge that by using the Services, some of your Personal Data will be passed on to Mobile Money Providers and our technology providers and you hereby authorise ChamaYettu to share with, provide or disclose to such third parties with which you have separately contracted or with which you intend to contract your Personal Data including any Customer Information, information pertaining to you or your usage of ChamaYettu products and Services provided that the authority given to Us to disclose information to such third parties (not being a law enforcement, investigative or regulatory authority) pursuant to this clause may be withdrawn at any time.
+                5.8 You acknowledge that ChamaYettu may verify your identity information through publicly available and/or restricted government databases in order to comply with regulatory requirements.
+                5.9 You accept that ChamaYettu shall have the right to monitor your account usage and may disclose Personal Data to local law enforcement or investigative agencies or any competent regulatory or governmental agencies to assist in the prevention, detection or prosecution of money laundering activities, fraud or other criminal activities. 
+                5.10 ChamaYettu personnel who handle Personal Data have a responsibility and are under an obligation to treat it securely, confidentially and may not disclose it to unauthorized third parties. Personnel who violate ChamaYettu’s privacy policies are subject to a range of disciplinary actions.
+                5.11 Any person submitting any information to Us through the Website may be granted access rights to that information in accordance with the Privacy Policy. You agree to inform us promptly, and in any event, within 30 days, in writing if there are any changes to your Credentials and to respond promptly to any request from us.
+                5.12 If: 
+                * You fail to provide promptly Customer Information that we reasonably requested, or
+                * You withhold or withdraw any consents that we may need to process, transfer or disclose Customer Information for your use of the Services (except for purposes connected with marketing or promoting products and services to you); or
+                * We have, or a member of ChamaYettu has, suspicions regarding money laundering activities, fraud or other criminal activities and/or associated risk.
+                We may:
+                * be unable to provide new, or continue to provide all or part of the Services to you and reserve the right to terminate our relationship with you;
+                * take actions necessary for us or a member of ChamaYettu to meet any compliance obligations as required by applicable Law; and/or
+                * block, transfer or close your account(s) where permitted under applicable Law.
+                5.13 In addition, if you fail to supply promptly your tax Information and accompanying statements, waivers and consents, as may be requested, then we may make our own judgment with respect to your status, including whether you are reportable to a Tax Authority, and may require us or other persons to withhold amounts as may be legally required by any Tax Authority and paying such amounts to the appropriate Tax Authority.
+            </p>
+            <p class="fw-bold fs-5">6. CHAMA CONTRIBUTIONS AND FEES </p>
+            <p class="lh-base text-start">
+                6.1 The Website allows you to contribute towards your chama. The maximum chama contribution limit of any advance will vary depending on your credit score. Your contribution history will be relevant to your credit score, among other factors. 
+                6.2 For every aggregated chama cash sent to members we will charge a Service Fee, which typically varies between 4%-8% of the total amount contributed by the specific chama members.
+                6.3 You agree to pay a one-time nonrefundable fee of ksh 222 as a service fee to join a chama. 
+                6.4 You agree to promptly pay your specified chama’s contribution weekly or monthly, failure to do so may attract a penalty  
+                6.5 The Service Fee shall be determined by ChamaYettu and varies, but shall be subject to the thresholds permissible by applicable Law. 
+                6.6 You hereby agree to pay all amounts payable in connection with your use of the Services. All payments to be made by you under this Agreement shall be made in full without any setoff or counterclaim and save in so far as required by the law to the contrary, free and clear of and without any deduction or withholding whatsoever. If you are at any time required to make any deduction or withholding from any payment to Us, you shall immediately pay to Us such additional amounts as will result in Us receiving the full amount it would have received had no such deduction or withholding been required.
+                6.7 You agree to pay all other fees, expenses and taxes, duties, impositions and expenses incurred in complying with your Requests.
+                6.8 You hereby agree to pay costs, charges and expenses incurred by Us in obtaining or attempting to obtain payment of any fees owed by you.
+            </p>
+            <p class="fw-bold fs-5">7. IF YOU DEFAULT ON PAYING PENALTIES </p>
+            <p class="lh-base text-start">
+                7.1 At any time after an Event of Default has occurred which is continuing, you agree and consent to us being able to, without prejudice to any other right or remedy granted to it under any law:
+                7.1.1 Declare that the penalty (and all accrued interest and all other amounts outstanding under this Agreement is immediately due and payable, whereupon they shall become immediately due and payable); 
+                7.1.2 Engage an external collections agency to seek repayment;
+                7.1.3 Get indemnification upon demand against any reasonable loss or expense, which We may incur as a consequence of an Event of Default; and/or
+                7.1.4 Terminate this Agreement in accordance with Section 14 below.
+            </p>
+            <p class="fw-bold fs-5">8. TAXES </p>
+            <p class="lh-base text-start">
+                8.1 All payments to be made by you in connection with this Agreement are calculated without regard to any taxes payable by you. If any taxes are payable in connection with the payment, you must pay Us an additional amount equal to the payment multiplied by the appropriate rate of tax. You must do so at the same time as making the payment.
+                8.2 You hereby consent and agree that We may withhold amounts in your Account, if any tax authority requires Us to do so, or We are otherwise required by law or pursuant to agreements with any tax authority to do so, or if We need to comply with internal policies or with any applicable order or sanction of a tax authority.
+            </p>
+            <p class="fw-bold fs-5">9. CUSTOMER ACCOUNT STATEMENTS</p>
+            <p class="lh-base text-start">
+                9.1 A statement and activity report in respect of your chama contributions can be made available to you upon Request. Please contact Us via the Website, or via e-mail at info@chamayettu.co.ke
+                9.2 Your statement will show all the details of the last contribution transaction or such other number of transactions as determined by Us and initiated from your Equipment. You must check your statement carefully and notify us as soon as possible if it includes any transaction or other entry which appears to you to be wrong or not made in accordance with your instructions.
+                9.3 We reserve the right to rectify discrepancies, add and/or alter the entries in your statements, without prior notice to you. We will however inform you of any rectification, additions and or alterations effected on your statements within a reasonable time after the changes are effected.
+                9.4 Save for a manifest error, a statement issued to you in respect of your transactions shall be conclusive evidence of the transactions carried out and requested by you from your Equipment for the period covered in the statement.
+            </p>
+            <p class="fw-bold fs-5">10. COMMUNICATION METHODS (INCLUDING MARKETING)  </p>
+            <p class="lh-base text-start">
+                10.1 You consent that we may send you notifications about (i) the Services or transaction related matters that may be of importance to you; and (ii) marketing messages about the Services. You consent that we may send you notifications through our Website as well as SMS and emails to the email address and mobile phone number you provide to Us at the time of registration. 
+                10.2 You may at any time opt-out from receiving direct marketing communications from us by writing to us at info@chamayettu.co.ke; and/or (ii) using the unsubscribe instructions in any email/SMS communications sent to you.
+            </p>
+            <p class="fw-bold fs-5">11. WITHDRAWING YOUR CONSENT FROM CHAMAYETTU ACCESSING YOUR CUSTOMER INFORMATION IN THE FUTURE </p>
+            <p class="lh-base text-start">
+                By deleting your profile, you can withdraw your consent from ChamaYettu accessing your Customer Information in the future, but you acknowledge and provide your consent that we may keep and share the Customer Information provided up until the point of deletion for as long as necessary for the fulfillment of the purposes for which Customer Information was obtained or for the establishment, exercise or defense of legal claims, or for legitimate business purposes, or as permitted by law.
+            </p>
+            <p class="fw-bold fs-5">12. YOUR LIABILITY FOR REQUESTS MADE WITHIN THE WEBSITE </p>
+            <p class="lh-base text-start">
+                12.1 You authorize Us to act on all Requests received from you (or purportedly from you) through the System and to hold you liable in respect thereof, even if that Request is otherwise for any reason incomplete or ambiguous if, in our absolute discretion, We believe that it can correct the incomplete or ambiguous information in the Request without any reference to you being necessary.
+                12.2 We shall be deemed to have acted properly and to have fully performed all the obligations owed to you notwithstanding that the Request may have been initiated, sent or otherwise communicated in error or fraudulently, and you shall be bound by any Requests on which We may act if We have in good faith acted in the belief that such instructions have been sent by you.
+                12.3 You acknowledge that we may nevertheless refuse to carry out any Requests in our sole and absolute discretion, including the right to reject any Request in relation to joining a chama application from you even if you have previously been a member of a chama.
+                12.4 You agree to and shall release from and indemnify Us against all claims, losses, damages, costs and expenses, howsoever arising in consequence of, or in any way related to Us having acted (or failed to act) in accordance with the whole or any part of any of your Requests.
+                12.5 You acknowledge that, to the full extent permitted by law, We shall not be liable for any unauthorized drawing, transfer, remittance, disclosure, any activity or any incident on your account by the fact of the knowledge and/or use or manipulation of your Account PIN, password, ID or any means whether or not occasioned by your negligence.
+                12.6 We are authorized to effect such orders in respect of your Account as may be required by any court order or competent authority or agency under the applicable laws. 
+                12.7 In the event of any conflict between any terms of any Request received by Us from you and this Agreement, this Agreement shall prevail. 
+            </p>
+            <p class="fw-bold fs-5">13. YOUR RESPONSIBILITY TO KEEP YOUR LOG IN DETAILS & YOUR EQUIPMENT SAFE  </p>
+            <p class="lh-base text-start">
+                13.1 You agree that you shall: 
+                13.1.1 at your own expense, provide and maintain in safe and efficient operating order your Equipment necessary for the purpose of accessing the System and the Services;
+                13.1.2 ensure the proper performance of your Equipment, and that We shall neither be responsible for any errors or failures caused by any malfunction of your Equipment and nor shall We be responsible for any computer virus or related problems that may be associated with the use of the System, the Services or the Equipment;
+                13.1.3 be responsible for charges due to any service provider providing you with connection to the Network and We shall not be responsible for losses or delays caused by any such service provider;
+                13.1.4 follow all instructions, procedures and terms contained in this Agreement and any document provided by Us concerning the use of the System and the Services;
+                13.1.5 be solely responsible for the safekeeping and proper use of your Equipment and for keeping your Credentials secret and secure. You shall ensure that your Credentials do not become known or come into possession of any unauthorized person. We shall not be liable for any disclosure of your Credentials to any third party and you hereby agree to indemnify and hold Us harmless from any losses resulting from any disclosure of your Credentials;
+                13.1.6 take all reasonable precautions to detect any unauthorized use of the System and the Services, and you shall ensure that all communications from Us are examined and checked by you or on your behalf as soon as practicable after receipt by you in such a way that any unauthorized use of and access to the System will be detected;
+                13.1.7 not at any time operate or use the Services in any manner that may be prejudicial to Us; and
+                13.1.8 follow the security procedures notified to you by Us from time to time or such other procedures as may be applicable to the Services from time to time. You acknowledge that any failure on your part to follow the recommended security procedures may result in a breach of your Account’s confidentiality. In particular, you shall ensure that the Services are not used or Requests are not issued or the relevant functions are not performed by anyone other than a person authorized to do so.
+                13.2 You further agree that you shall immediately inform Us in the event that you have reason to believe that:
+                13.2.1 Your Credentials are or may be known to any person not authorized to know the same and/or have been compromised; and/or
+                13.2.2 unauthorized use of the Services has or may have occurred or could occur and a transaction may have been fraudulently input or compromised.
+            </p>
+            <p class="fw-bold fs-5">14. TERMINATION OF THIS AGREEMENT </p>
+            <p class="lh-base text-start">
+                14.1 We may at any time, upon notice to you, terminate our business relationship with you and close your Account, and in particular but without prejudice to the generality of the foregoing, We may revoke your participation in your chama which we have granted and require the repayment of outstanding debts resulting from such penalties within such time as We may determine.
+                14.2 Without prejudice to Our rights under this section. We may, at our sole discretion, suspend or close your Account if:
+                14.2.1 We detect or reasonably suspect any abuse/misuse, breach of content, fraud or attempted fraud relating to your use of the Services;
+                14.2.2 We are required or requested to comply with an order or an instruction or a recommendation from the Government, Court, regulator or other competent authority;
+                14.2.3 We reasonably suspect or believe that you are in breach of this Agreement (including non-payment of any penalties amount due from you where applicable) which you fail to remedy (if remediable) within 5 days after the service of notice by email, SMS or other electronic means requiring you to do so;
+                14.2.4 such a suspension or variation is necessary as a consequence of technical problems or for reasons of safety; to facilitate, update or upgrade the contents or functionality of the Services from time to time;
+                14.2.5 your Account becomes inactive or dormant;
+                14.2.6 you breach any of the License Restrictions;
+                14.2.7 your Account or the agreement with the Mobile Money Provider and/or Mobile Network Provider is terminated for whatever reason; or
+                14.2.8 We decide to suspend or cease the provision of the Services for commercial reasons or for any other reason.  
+                14.3 Termination shall however not affect any accrued rights, remedies and liabilities of either party.
+                14.4 If We receive notice of your death, We will not be obliged to allow any operation or withdrawal from your Account by any person except upon production of administration letters from a competent authority or confirmed grant of letters of administration or confirmed grant of probate by your legal representatives duly appointed by a court of competent jurisdiction.
+                14.5 If your Account has a credit balance at any time as a result of overpayment of your chama contribution, you may issue a Request to ChamaYettu for payment of such credit balance and ChamaYettu will return any such balance to you, less any applicable fees, provided that such amount falls above the minimum transfer amounts specified by the relevant Mobile Money Provider.
+            </p>
+            <p class="fw-bold fs-5">15. LIMITATION OF CHAMAYETTU’S LIABILITY  </p>
+            <p class="lh-base text-start">
+                15.1 We shall not be responsible for any loss suffered by you should the Services be interfered with or be unavailable by reason of the failure of any of your Equipment, or any other circumstances whatsoever not within ChamaYettu’s control including, without limitation, Force Majeure or error, interruption, delay or non-availability of the System, terrorist or any enemy action equipment failure, loss of power, adverse weather or atmospheric conditions, operation of the law and failure of any public or private telecommunications system.
+                15.2 You acknowledge that the Website has not been developed to meet your individual requirements, and that it is therefore your responsibility to ensure that the facilities and functions of the Website, as described meet your requirements.
+                15.3 We only supply the Website for domestic and private use. You agree not to use the Website and documents for any commercial, business or resale purposes, and we have no liability to you for any loss of profit, loss of business, business interruption, or loss of business opportunity.
+                15.4 We will not be liable for any losses or damage suffered by you as a result of or in connection with:
+                15.4.1 a defect or fault in the Website or any Service resulting from you having altered or modified the Website;
+                15.4.2 a defect or fault in the Website resulting from you having used the Website in breach of the terms of this Agreement;
+                15.4.3 your breach any of the License Restrictions;
+                15.4.4 unavailability of sufficient funds in your Mobile Money Account;
+                15.4.5 failure, malfunction, interruption or unavailability of the System, your Equipment, the Network or a Mobile Money System;
+                15.4.6 the money in your Account being subject to legal process or other encumbrance restricting payments or transfers thereof;
+                15.4.7 your failure to give proper or complete instructions for payments or transfers relating to our Account;
+                15.4.8 any fraudulent or illegal use of the Services, the System and/or your Equipment; or
+                15.4.9 your failure to comply with this Agreement and any document or information provided by Us concerning the use of the System and the Services.
+                15.5 We shall not be liable to you for any interference with or unavailability of the Services, however caused. Under no circumstances shall We be liable to you for any loss of profit or anticipated savings or for any indirect or consequential loss or damage of whatever kind, however caused, arising out of or in connection with the Services even where the possibility of such loss or damage is notified to Us.
+                15.6 Our sole liability under this Agreement in respect of Service interference or unavailability shall be limited to the re-establishment of the Services as soon as reasonably practicable, save where reestablishment of the Services is not commercially viable or is not within ChamaYettu’s control including, without limitation, Force Majeure or error, interruption, delay or non-availability of the System, terrorist or any enemy action equipment failure, loss of power, adverse weather or atmospheric conditions, operation of the law and failure of any public or private telecommunications system.
+                15.7 Save as provided in Section 15.6, we shall not be liable to you for any interference with or unavailability of the Services, howsoever caused.
+                15.8 All warranties and obligations implied by law are hereby excluded to the fullest extent permitted by law.
+            </p>
+            <p class="fw-bold fs-5">16. INDEMNITY AND EXCLUSION OF LIABILITY </p>
+            <p class="lh-base text-start">
+                16.1 In consideration of Us complying with your instructions or Requests in relation your Account, you undertake to indemnify Us and hold it harmless against any loss, charge, damage, expense, fee or claim which We suffer or incur or sustain thereby and you absolve Us from all liability for loss or damage which you may sustain from Us acting on your instructions or requests or in accordance with this Agreement.
+                16.2 The indemnity shall also cover the following:
+                16.2.1 All demands, claims, actions, losses and damages of whatever nature which may be brought against Us or which We may suffer or incur arising from its acting or not acting on any Request or arising from the malfunction or failure or unavailability of any hardware, software,  or equipment, the loss or destruction of any data, power failures, corruption of storage media, natural phenomena, riots, acts of vandalism, sabotage, terrorism, any other event beyond Our control, interruption or distortion of communication links or arising from reliance on any person or any incorrect, illegible, incomplete or inaccurate information or data contained in any Request received by us.
+                16.2.2 Any loss or damage that may arise from your use, misuse, abuse or possession of any third party software, including without limitation, any operating system, browser software or any other software packages or programs.
+                16.2.3 Any unauthorized access to your Account or any breach of security or any destruction or accessing of your data or any destruction or theft of or damage to any of your Equipment.
+                16.2.4 Any loss or damage occasioned by the failure by you to adhere to this Agreement and/or by supplying of incorrect information or loss or damage occasioned by the failure or unavailability of third party facilities or systems or the inability of a third party to process a transaction or any loss which may be incurred by Us as a consequence of any breach by this Agreement.
+                16.2.5 Any damages and costs payable to Us in respect of any claims against Us for recompense for loss where the particular circumstance is within your control.
+            </p>
+            <p class="fw-bold fs-5">17. COMMUNICATION BETWEEN US </p>
+            <p class="lh-base text-start">
+                17.1 If you wish to contact us in writing, or if any condition in this Agreement requires you to give us notice, you can send this to us by e-mail to info@chamyettu.co.ke. We will confirm receipt of this by contacting you in writing by e-mail.
+                17.2. If we have to contact you or give you notice in writing, We will do so by e-mail or by SMS to the mobile phone number or email address you provide to us in your request for the Website.
+            </p>
+            <p class="fw-bold fs-5">18. GENERAL PROVISIONS  </p>
+            <p class="lh-base text-start">
+                18.1 No failure on the part of any party to exercise, or delay on its part in exercising, any right, power or remedy provided by this Agreement or by law shall operate as a waiver thereof, nor shall any single or partial exercise of any such right, power or remedy preclude any further or other exercise of that, or any other, right, power or remedy.
+                18.2 No failure by Us to exercise, and no delay in exercising, any right or remedy in respect of any provision of this Agreement shall operate as a waiver of such right or remedy.
+                18.3 If any provision or part of a provision of this Agreement shall be, or be found by any court of competent jurisdiction to be, invalid or unenforceable, such invalidity or unenforceability shall not affect the other provisions or parts of such provisions of this Agreement, all of which shall remain in full force and effect.
+                18.4 We may vary or amend at any time and without notice to you these Terms and Conditions and the Service Fees. Any such variations or amendments may be published by Us on the Website, in the daily newspapers, through Social Media, on Our website and/or by any other means as determined by Us and any such variations and amendments shall take effect immediately upon publication. Any changes to these Terms and Conditions may be made from time to time by Us and of which notice has been given to you by way of publication shall be binding upon you as fully as if the same were contained in this Agreement.
+                18.5 If any provision of these Terms and Conditions shall be found by any duly appointed arbitrator, court or administrative body of competent jurisdiction to be invalid or unenforceable the invalidity or un-enforceability of such provision shall not affect the other provisions herein.
+                18.6 You agree that You shall not assign any of your rights under this Agreement, transfer any of your obligations under this Agreement, sub-contract or delegate any of your obligations under this Agreement nor charge or deal in any other manner with this Agreement or any of your rights or obligations.
+                18.7 You acknowledge that we may assign and transfer any of Our rights and obligations under this Agreement either absolutely or as collateral security to any third party or third parties at Our discretion.
+                18.8 The Terms and Conditions constitute the entire agreement between you and us and supersede and extinguish all previous agreements, promises, assurances, warranties, representations and understandings between us, whether written or oral, relating to its subject matter.
+                18.9 You acknowledge that in entering into this Agreement you do not rely on any statement, representation, assurance or warranty (whether made innocently or negligently) that is not set out in this Agreement. 
+                18.10 You and We agree that neither of us shall have any claim for innocent or negligent misrepresentation or negligent misstatement based on any statement in this Agreement.
+            </p>
+            <p class="fw-bold fs-5">19. GOVERNING LAW & DISPUTE RESOLUTION </p>
+            <p class="lh-base text-start">
+                19.1 ChamaYettu encourages you to report any disputes, claims or discrepancies via email at info@chamayettu.co.ke
+                19.2 In any event, you agree that you shall, in good faith, resolve any dispute, controversy or claim of any nature whatsoever arising out of or in relation to or in connection with this Agreement. 
+                19.3 This Agreement will be governed by and construed in accordance with international laws of arbitration and the laws of the Republic of Kenya, without giving effect to any choice or conflict of law provision, except that questions affecting the construction and effect of any Intellectual Property Right(s) shall be determined by the law of the country in which the Intellectual Property Right(s) shall have been granted.
+            </p>
+            <p class="fw-bold fs-5">20. DEFINITIONS AND INTERPRETATION OF TERMS USED IN THIS AGREEMENT </p>
+            <p class="lh-base text-start">
+                Terms used in this Agreement shall have the following meanings. unless the context requires otherwise, the singular shall include the plural and vice versa; a reference to any one gender, whether masculine, feminine or neuter, includes the other two; all the headings, subheadings and bullet points in this Agreement are for convenience only and are not to be taken into account for the purposes of interpreting it; the recitals and schedules shall be deemed to form part of this Agreement.
+                “Agreement” means this Agreement;
+                “Account” means your account with ChamaYettu;
+                “chama” means a group of people coming together to contribute cash either weekly or monthly and then the aggregated cash is given to one chama member and the cycle continues until every member receives the aggregated cash. 
+                “Credentials” means your personal credentials used to access the ChamaYettu Website and operate your Account;
+                “Customer Information” means your Personal Data, Sensitive Personal Data, Health Data and/or Tax Information, including relevant information about you, your transactions, your use of our products and services, and your relationships with ChamaYettu.
+                “E-Money” means the electronic monetary value depicted in your Account representing an equal amount of cash;
+                “Equipment” includes your mobile phone handset, SIM Card and/or other equipment which when used together enables you to access the Network;
+                “Force Majeure” means events, circumstances or causes beyond a reasonable control making performance of the obligations inadvisable, commercially impracticable, illegal, or impossible, including but not limited to acts of God, war, acts of terrorism, strikes or labor disputes, embargoes or governmental orders;
+                “Encumbrance” includes any mortgage or charge (whether legal or equitable), lien, option, security interest, restrictive covenant, pledge, assignment, title retention, trust arrangement or other restriction of any kind or other encumbrance securing or any right conferring a priority of payment in respect of any obligation of any person;
+                “Late Payment Fee” means the late fees applicable to you if you fail to make any payments due to Us at the due date for such payment.
+                “Mobile Money Account” means your mobile money store of value, being the record maintained by Mobile Money Providers in Kenya of the amount of E-Money from time to time held by you in the Mobile Money Provider’s System;
+                “Mobile Money” means the money transfer and payments service operated by the Mobile Money Providers in Kenya;
+                “Mobile Money Service” means the money transfer and payments service provided by the Mobile Money Providers through the Mobile Money System;
+                “Mobile Money System” means the system operated by the Mobile Money Providers in Kenya for the provision of the Mobile Money Service;
+                “Mobile Network Operator” or “Mobile Money Provider” means a mobile network operator registered with the Communications Authority of Kenya;
+                “Network” means a mobile cellular network operated by a Mobile Network Operator;
+                “Personal Data” means personal identifiable information as prescribed in the Data Protection Act which includes but is not limited to name, address, phone number, identification number, location data, date of birth, gender, transaction data, an online identifier or information relating to one or more factors specific to the physical, psychological, genetic, mental, economic, cultural or social identity of that. It also includes Sensitive Personal Data.
+                “Privacy Notice” means the Privacy Notice (available within the ChamaYettu Website and on the ChamaYettu website) that sets out the Personal Data that we collect from you and the purpose for which we use your Personal Data.
+                “Privacy Policy” means the ChamaYettu Privacy Policy (available within the ChamaYettu Website and on the ChamaYettu website) that sets out the basis on which any personal data we collect from you, or that you provide to us, will be stored and processed by us, and incorporates our Privacy Notice.
+                “Relevant Information”  means information that ChamaYettu requires for purposes of providing the Services, including, but not limited to, data relating to your phone (including, without limitation, your phone’s history) from your Equipment (meaning your mobile phone handset, SIM Card and/or other equipment which when used together enables you to access the Network), from any SMS (meaning a short message service consisting of a text message transmitted from your mobile phone to another)sent to you by the Mobile Money Providers (meaning a mobile network operator registered with the Communications Authority of Kenya) and any financial services providers relating to your use of the Mobile Money Service (meaning the money transfer and payments service provided by the Mobile Money Providers through the Mobile Money System) and such other information as specified in the relevant Privacy Notice of the particular Service.
+                “Request” means a request or instruction received by ChamaYettu from you, your Equipment, or purportedly from you through the Network, mobile phone and the System and upon which ChamaYettu is authorized to act;
+                “Sensitive Personal Data” means data revealing the natural person’s race, health status, ethnic social origin, conscience, belief, genetic data, biometric data, property details, marital status, family details including names of the person’s children, parents, spouse or spouses, sex or the sexual orientation of the data subject;
+                “Services” shall include any form of services or products that ChamaYettu may offer you within the Website pursuant to this Agreement and as you may from time to time subscribe to and “Service” shall be construed accordingly;
+                “Service Fee” means a one-time technology service fee payable for each Credit Advance.
+                “SIM Card” means the subscriber identity module which when used with the appropriate mobile phone handset enables you to access the Network and to use the Mobile Money Account;
+                “SMS” means a short message service consisting of a text message transmitted from your mobile phone to another;
+                “System” means electronic communications software enabling you to communicate with ChamaYettu for purposes of the Services. The System and the Services will for the purpose of this Agreement be accessed through a Mobile Network Operator’s System;
+                “Technology” means services used or supported by the Website;
+                “Telecom Charges” means telecom network distribution costs which are paid by you directly to your telecom provider.
+                “Terms and Conditions” refer to this Agreement together with the Privacy Policy, Privacy Notice and the Credit Advance Offer Page;
+                “User” means a mobile network subscriber who has installed the Website and is onboarded successfully for use of the Services.
+            </p>    
+            </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="okay">Close</button>
+        </div>
+      </div>
+    </div>
     <script>
         const togglePassword = document.getElementById('togglePassword');
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
         const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
 
         togglePassword.addEventListener('click', function() {
             if (password.type === 'password') {
@@ -65,5 +368,17 @@
             }
         });
 
+        toggleConfirmPassword.addEventListener('click', function() {
+            if (confirmPassword.type === 'password') {
+                confirmPassword.type = 'text';
+                toggleConfirmPassword.classList.remove('fa-eye-slash');
+                toggleConfirmPassword.classList.add('fa-eye');
+            } else {
+                confirmPassword.type = 'password';
+                toggleConfirmPassword.classList.remove('fa-eye');
+                toggleConfirmPassword.classList.add('fa-eye-slash');
+            }
+        });
+
     </script>
-{% endblock %}
+{% endblock content %}

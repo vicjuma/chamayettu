@@ -1,147 +1,8 @@
-import uuid
 from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth import get_user_model
-from phonenumber_field.modelfields import PhoneNumberField
 
 User = get_user_model()
-
-class PersonalInfoStepOne(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=50)
-    middlename = models.CharField(max_length=50, blank=True)
-    lastname = models.CharField(max_length=50)
-    idnumber = models.CharField(max_length=50)
-
-    GENDER = (
-        ('MALE', 'male'),
-        ('FEMALE', 'female'),
-    ) 
-    gender = models.CharField(max_length=50, choices=GENDER)
-    dateofbirth = models.DateField()
-
-    STATUS = (
-        ('SINGLE', 'single'),
-        ('MARRIED', 'married'),
-        ('DIVORCED', 'divorced'),
-        ('WIDOWED', 'widowed'),
-        ('OTHER', 'other'),
-    )
-    status = models.CharField(max_length=50, choices=STATUS)
-
-    EDUCATION = (
-        ('PRIMARY_SCHOOL', 'primary school'),
-        ('HIGH_SCHOOL', 'high school'),
-        ('CERTIFICATE', 'certificate'),
-        ('DIPLOMA', 'diploma'),
-        ('GRADUATE', 'graduate'),
-        ('POST_GRADUATE', 'post graduate'),
-    )
-    education = models.CharField(max_length=50, choices=EDUCATION)
-
-    RESIDENT = (
-        ('RESIDENT', 'resident'),
-        ('NON_RESIDENT', 'non resident'),
-    )
-    resident = models.CharField(max_length=50, choices=RESIDENT)
-    is_complete = models.BooleanField(default=False)
-
-    def __str__(self) -> str:
-        return f'{self.firstname} {self.lastname}'
-
-    class Meta:
-        db_table = 'step_one'
-        verbose_name = 'Personal Info Step One'
-        verbose_name_plural = 'Personal Info Step One'
-
-class PersonalInfoStepTwo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField(max_length=254)
-
-    EMPLOYEMENT = (
-        ('SELF_EMPLOYED', 'self employed'),
-        ('UNEMPLOYED', 'unemployed'),
-        ('PERMANENT', 'permanent'),
-        ('PRIVATE_PRACTICE', 'private practice'),
-        ('PART_TIME', 'part time'),
-        ('CONTRACT', 'contract'),
-        ('OTHER', 'other'),
-    )
-
-    employment = models.CharField(max_length=50, choices=EMPLOYEMENT)
-
-    INCOME = (
-        ('LESS_THAN_5000', 'less than 5000'),
-        ('5001_10000', '5001-10,000'),
-        ('10001_15000', '10001-15000'),
-        ('150001_25000', '150001-25000'),
-        ('25001_40000', '25001-40000'),
-        ('40001_70000', '40001-70000'),
-        ('70001_150000', '70001-150000'),
-        ('ABOVE_150000', 'above 150000'),
-    )
-    income = models.CharField(max_length=50, choices=INCOME)
-
-    def __str__(self) -> str:
-        return f'{self.email}'
-
-    class Meta:
-        db_table = 'step_two'
-        verbose_name = 'Personal Info Step Two'
-        verbose_name_plural = 'Personal Info Step Two'
-
-class FirstGuarantor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=50)
-    lastname = models.CharField(max_length=50)
-    phone_number = PhoneNumberField(max_length=50)
-
-    RELASHIONSHIP = (
-        ('FATHER', 'father'),
-        ('MOTHER', 'mother'),
-        ('BROTHER', 'brother'),
-        ('SISTER', 'sister'),
-        ('SPOUSE', 'spouse'),
-        ('COLLEGUE', 'colleague'),
-        ('FRIEND', 'friend'),
-        ('OTHER', 'other'),
-    )
-    relationship = models.CharField(max_length=50, choices=RELASHIONSHIP)
-
-    def __str__(self) -> str:
-        return f'{self.firstname} {self.lastname}'
-
-    class Meta:
-        db_table = 'first_guarantor'
-        verbose_name = 'First Guarantor'
-        verbose_name_plural = 'First Guarantor'
-
-
-class SecondGuarantor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=50)
-    lastname = models.CharField(max_length=50)
-    phone_number = PhoneNumberField(max_length=50)
-
-    RELASHIONSHIP = (
-        ('FATHER', 'father'),
-        ('MOTHER', 'mother'),
-        ('BROTHER', 'brother'),
-        ('SISTER', 'sister'),
-        ('SPOUSE', 'spouse'),
-        ('COLLEGUE', 'colleague'),
-        ('FRIEND', 'friend'),
-        ('OTHER', 'other'),
-    )
-    relationship = models.CharField(max_length=50, choices=RELASHIONSHIP)
-
-    def __str__(self) -> str:
-        return f'{self.firstname} {self.lastname}'
-
-    class Meta:
-        db_table = 'second_guarantor'
-        verbose_name = 'Second Guarantor'
-        verbose_name_plural = 'Second Guarantor'
 
 class ContibutionFrequency(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -152,6 +13,7 @@ class ContibutionFrequency(models.Model):
     frequency = models.CharField(max_length=50, choices=FREQUENCY)
 
     AMOUNT = (
+        ('1', '1'),
         ('1000', '1000'),
         ('3000', '3000'),
         ('5000', '5000'),
@@ -183,16 +45,15 @@ class ContibutionFrequency(models.Model):
 
 
 class Chama(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    chama_id = models.UUIDField(default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
     frequency = models.CharField(max_length=50)
     amount = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)
+    group_complete = models.BooleanField(default=False)
 
     @property
     def counter(self):
-        return Chama.objects.filter(user=self.user).count()
+        return User.objects.filter(chama_id=self.id).count()
 
     @property
     def days(self):

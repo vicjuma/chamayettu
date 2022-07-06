@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+    <div class="container-fluid d-flex flex-row align-items-center justify-content-center mb-2 pb-2 fs-xs-6">
+        Dashboard/<a href="{% url 'step1' %}" class="text-decoration-none">step one</a>/<a href="{% url 'step2' %}" class="text-decoration-none">step two</a>/<a href="{% url 'step3' %}" class="text-decoration-none">guarantors</a>/
+    </div>
+    <form class="row g-3 border bg-white p-4 rounded shadow mb-5" id="login-form" action="{% url 'step3' %}" method="post" autocomplete="off">
+        <p class="fw-bolder text-center">Guarantors</p>
+        {% csrf_token %}
+        <hr/>
+            {% if errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Sorry!</strong> {{errors}}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Hurray!</strong> {{success}}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            <p class="fw-bolder">1. Guarantors (First)</p>
+            <div class="row col-12">
+                <div class="col-6">
+                    <label for="firstname" class="form-label"><span class="text-asterisk">*</span> Firstname</label>
+                    <input type="text" class="form-control" id="firstname" name="firstname" value="{{guarantor.firstname}}">
+                </div>
+                <div class="col-6">
+                    <label for="lastname" class="form-label"><span class="text-asterisk">*</span> Lastname</label>
+                    <input type="text" class="form-control" id="lastname" name="lastname" value="{{guarantor.lastname}}">
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="phone_number" class="form-label"><span class="text-asterisk">*</span> Phone number</label>
+                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{guarantor.phone_number}}">
+            </div>
+            <div class="col-12 mb-2">
+                <label for="relationship"><span class="text-asterisk">*</span>  Relationship</label>
+                <select class="form-select" aria-label="Default select example" id="relationship" name="relationship">
+                    <option selected value="MOTHER">mother</option>
+                    <option value="FATHER">father</option>
+                    <option value="BROTHER">brother</option>
+                    <option value="SISTER">sister</option>
+                    <option value="SPOUSE">spouse</option>
+                    <option value="COLLEAGUE">colleague</option>
+                    <option value="FRIEND">friend</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+            </div>
+            <p class="fw-bolder">2. Guarantors (Second)</p>
+            <div class="row col-12">
+                <div class="col-6">
+                    <label for="firstname1" class="form-label"><span class="text-asterisk">*</span> Firstname</label>
+                    <input type="text" class="form-control" id="firstname1" name="firstname1" value="{{guarantor1.firstname}}">
+                </div>
+                <div class="col-6">
+                    <label for="lastname1" class="form-label"><span class="text-asterisk">*</span> Lastname</label>
+                    <input type="text" class="form-control" id="lastname1" name="lastname1" value="{{guarantor1.lastname}}">
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="phone_number1" class="form-label"><span class="text-asterisk">*</span> Phone number</label>
+                <input type="text" class="form-control" id="phone_number1" name="phone_number1" value="{{guarantor1.phone_number}}">
+            </div>
+            <div class="col-12 mb-3">
+                <label for="relationship"><span class="text-asterisk">*</span>  Relationship</label>
+                <select class="form-select" aria-label="Default select example" id="relationship" name="relationship1">
+                    <option selected value="MOTHER">mother</option>
+                    <option value="FATHER">father</option>
+                    <option value="BROTHER">brother</option>
+                    <option value="SISTER">sister</option>
+                    <option value="SPOUSE">spouse</option>
+                    <option value="COLLEAGUE">colleague</option>
+                    <option value="FRIEND">friend</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-md">Next</button>
+            </div>
+          </div>
+    </form>
+    <script>
+    </script>
+{% endblock %}

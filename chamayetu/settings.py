@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +33,13 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'authentication.User'
 
+LOGIN_URL = 'login'
+
+VERIFICATION_SUCCESS_TEMPLATE = os.path.join(BASE_DIR, 'templates/success.html')
+VERIFICATION_FAILED_TEMPLATE = os.path.join(BASE_DIR, 'templates/failed.html')
+REQUEST_NEW_EMAIL_TEMPLATE = os.path.join(BASE_DIR, 'templates/newmail.html')
+NEW_EMAIL_SENT_TEMPLATE  = os.path.join(BASE_DIR, 'templates/newmailSent.html')
+LINK_EXPIRED_TEMPLATE = os.path.join(BASE_DIR, 'templates/failed.html')
 
 # Application definition
 INSTALLED_APPS = [
@@ -47,6 +55,10 @@ INSTALLED_APPS = [
     'daraja',
     'authentication',
     'account',
+    'step1',
+    'step2',
+    'step3',
+    'verify_email.apps.VerifyEmailConfig'
 ]
 
 MIDDLEWARE = [
@@ -79,6 +91,8 @@ TEMPLATES = [
     },
 ]
 
+# REQUEST_NEW_EMAIL_TEMPLATE = os.path.join(BASE_DIR, 'templates/new-token-request.html')
+
 WSGI_APPLICATION = 'chamayetu.wsgi.application'
 
 
@@ -92,6 +106,9 @@ DATABASES = {
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        }
     }
 }
 
@@ -131,12 +148,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_files')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -155,3 +172,14 @@ PASS_KEY=config('PASS_KEY')
 TWILIO_VERIFY_SERVICE_SID=config('TWILIO_VERIFY_SERVICE_SID')
 TWILIO_ACCOUNT_SID=config('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN=config('TWILIO_AUTH_TOKEN')
+
+
+# email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
+MAILER_EMAIL_BACKEND = EMAIL_BACKEND  
+EMAIL_HOST = 'webmail.chamayettu.co.ke'  
+EMAIL_HOST_PASSWORD = 'chamayettu.co.ke'  
+EMAIL_HOST_USER = 'info@chamayettu.co.ke'  
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_USE_TLS = True  

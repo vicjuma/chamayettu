@@ -1,18 +1,71 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<div class="container">
+<div class="container mb-4">
+    <div class="row px-1">
+        <div class="col-12 border shadow bg-white py-2 px-2 rounded">
+            <div class="position-relative d-flex align-items-center px-2">
+                <p class="px-3 mb-2">Live:</p>
+                <p class="mb-2" id="messages"></p>
+                <span class="position-absolute start-1 bottom-0 translate-middle p-2 bg-danger border border-light rounded-circle">
+                    <span class="visually-hidden">New alerts</span>
+                </span>
+            </div>
+        </div>
+    </div>
     <div class="row p-4 rounded bg-white border shadow d-md-flex align-items-center my-4">
+        <p class="text-center fw-bold fs-3">Trusted Cash Contribution Chama</p>
         <div class="col-sm-12 col-md-4 col-lg-5 mt-4 p-2">
             <div class="border shadow p-4 rounded d-flex flex-column justify-content-center py-4">
-                <p class="text-center fw-bolder">Join Chama Yetu</p>
+                <p class="text-center fw-bolder">Join ChamaYettu</p>
                 <a href="{% url 'register' %}" class="btn btn-primary btn-md rounded-pill my-2" >Sign Up</a>
                 <a href="{% url 'login' %}" class="btn btn-outline-success rounded-pill my-4" >Sign In</a>
+                <h5 class="card-title fw-bold pb-2 text-center mt-2">How it works</h5>
+                    <p class="card-text text-start">
+                        <!-- list style of tick -->
+                        <ul style="list-style-type: '→'" class=" lh-lg ">
+                            <li>Register, join a chama, and contribute.</li>
+                            <li>Receive your chama’s aggregated cash during your turn (up to 6 times your contribution amount).</li>
+                        </ul>
+                    </p>
             </div>
         </div>
         <div class="col-sm-12 col-md-7 col-lg-7 d-flex justify-content-center">
-            <img src="{% static 'img/background.png' %}" alt="background image" width="400" height="400" >
+            <div class="border shadow p-4 rounded d-flex flex-column justify-content-center py-4 mt-4" style="position: relative;">
+                <h5 class="card-title fw-bold pb-2 text-center mt-2">We as ChamaYettu management ensures</h5>
+                <img src="{% static 'img/background.png' %}" alt="background image" width="200" height="180" id="index-img" />
+                <ul style="list-style-type: '→'" class="lh-lg" style="position: absolute; top: 1;">
+                    <li>Everyone contributes promptly (weekly or monthly).</li>
+                    <li>Everyone gets their aggregated chama’s cash during their turn.</li>
+                    <li>All the members’ contributed cash is safe.</li>
+                    <li>Equality in the chama.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
-{% endblock %}
+<script>
+    const url = `http://${window.location.host}/messages/`;
+    
+    //get the latest
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('messages').innerHTML = data.message;
+        })
+        .catch(error => console.error(error));
+        
+    // fetch the messages every 5 seconds
+    setInterval(() => {
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if(data.message !== "" || data.message !== undefined || data.message !== null){
+                document.getElementById('messages').innerHTML = data.message;   
+            }
+        })
+        .catch(error => console.error(error));
+    }, 5000);
+
+</script>
+{% endblock content %}

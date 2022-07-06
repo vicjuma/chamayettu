@@ -29,10 +29,8 @@
                             {% if chama %}
                                 {% if chama.leave %}
                                     <a href="{% url 'step1' %}" class="btn btn-danger px-4 my-4">Leave</a>
-                                    <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Info</a>
                                 {% else %}
                                     <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-danger btn-block">Leave</button>
-                                    <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Info</a>
                                 {% endif %}
                             {% else %}
                                 <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Join</a>
@@ -93,7 +91,7 @@
                                 <div class="d-flex flex-row">
                                     <div>
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" class="btn btn-outline-primary broder border-2 px-4">
-                                            {% if chama.counter > 1 %} Members {% else %} Member {% endif %} <span class="badge bg-danger mx-1">{{chama.counter}}</span>
+                                            {% if count > 1 %} Members {% else %} Member {% endif %} <span class="badge bg-danger mx-1">{{count}}</span>
                                           </button>
                                     </div>
                                     <div class="mx-2">
@@ -147,7 +145,7 @@
             </div>
             <div class="modal-body">
                 {% for user in users %}
-                    {% if chama.user_id == user.id %}
+                    {% if user.chama_id == chama.id %}
                         {% if user.profile_image %}
                             <p class="card-text"><span><img src="{{ user.profile_image.url }}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
                         {% else %}
@@ -200,8 +198,8 @@
     const number = phone_number.value
     let amount_ =  1
 
-    const url = 'http://127.0.0.1:8000/api/v1/mpesa/savings/'
-    const url_status = 'http://127.0.0.1:8000/api/v1/mpesa/savings/status/'
+    const url = `http://${window.location.host}/api/v1/mpesa/savings/`
+    const url_status = `http://${window.location.host}/api/v1/mpesa/savings/status/`
     
     const formData = new FormData()
     formData.append('phone_number', number)
@@ -231,7 +229,7 @@
 
     const generate_error = (response) => {
         message.innerHTML = `<div class="alert fs-6 alert-danger alert-dismissible fade show" role="alert">
-            ${response}.
+            ${response}
         </div>`
     }
 

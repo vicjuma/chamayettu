@@ -61,11 +61,6 @@
                                 <div>
                                     <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdropSave" class="btn btn-primary btn-block" id="save">Save</button>
                                 </div>
-                                <div>
-                                    {% if chama %}
-                                    <a href="{% url 'savings_contribute' %}" class="btn btn-success btn-block mx-2" id="save">Contribute</a>
-                                    {% endif %}
-                                </div>
                             </div>
                         </p>
                         <p class="card-text text-muted fst-italic" style="font-size: 12px;">N.B You can pay you conribution using your saving.</p>
@@ -95,10 +90,17 @@
                                           </button>
                                     </div>
                                     <div class="mx-2">
-                                        {% if chama.days_left == 6 %}
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" class="btn btn-primary broder border-2 px-4">Contribute</button>
+                                        {% if chama.days_left < 6 %}
+                                            <button 
+                                            id="contribute"
+                                            type="button" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#staticBackdrop2" 
+                                            class="btn btn-primary broder border-2 px-4">
+                                            Contribute
+                                        </button>
                                         {% endif %}    
-                                    </div>    
+                                    </div>
                                 </div>
                             </p>
 
@@ -136,6 +138,7 @@
           </div>
         </div>
       </div>
+
       <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -160,6 +163,32 @@
           </div>
         </div>
       </div>
+
+      <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Contribution</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for user in users %}
+                    {% if user.chama_id == chama.id %}
+                        {% if user.profile_image %}
+                            <p class="card-text"><span><img src="{{ user.profile_image.url }}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% else %}
+                            <p class="card-text"><span><img src="{% static 'img/avatar.jpg' %}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+              <button id="pay" type="button" class="btn btn-primary" data-bs-dismiss="modal">Pay.</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="modal fade" id="staticBackdropSave" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -186,6 +215,7 @@
           </div>
         </div>
       </div>
+
 </div>
 <script>
     const okay = document.getElementById('okay')
@@ -194,6 +224,10 @@
     const errors = document.getElementById('errors')
     const message = document.getElementById('message')
     const save = document.getElementById('save')
+
+    const contribute = document.getElementById('contribute')
+    const pay = document.getElementById('pay')
+
 
     const number = phone_number.value
     let amount_ =  1
@@ -309,6 +343,38 @@
           })
     })
 
+    pay.addEventListener('click', () => {
+        // amount_ = amount.value
+        // formData.append('amount', amount_)
+        contribute.disabled = true
+        contribute.innerHTML = 'Processing <i class="fas fa-spinner fa-spin"></i>'
+
+        // if(amount_ == '' ){
+        //     generate_error('Please enter amount/greater than 1')
+        //     save.disabled = false
+        //     save.innerText = 'Save'
+        //     return
+        // }
+
+        // axios.post(url, formData, {
+        //   headers: {
+        //     'X-CSRFToken': csrftoken,
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // })
+        //   .then(res => {
+        //     let data = res.data.data.ResponseDescription
+        //     let checkout_id = res.data.data.CheckoutRequestID
+        //     generate_success(data)
+        //     check_status(res, checkout_id) 
+        //   })
+        //   .catch(err => {
+        //     console.log(err.response)
+        //     save.disabled = false
+        //     save.innerHTML = 'save'
+        //     errors.innerHTML = '<strong>Sorry!</strong> Contribution failed. Please try again.'
+        //   })
+    })
 
 </script>
 {% endblock %}

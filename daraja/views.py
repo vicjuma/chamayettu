@@ -17,7 +17,6 @@ from daraja.format_date import format_date
 from daraja.serializer import MakePaymentSerializer, TransactionSerializer
 from daraja.models import Transaction, Savings
 
-# Create your views here.
 class InitiateSTKPush(GenericAPIView):
     serializer_class = MakePaymentSerializer
     def post(self, request):

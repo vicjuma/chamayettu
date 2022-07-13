@@ -7,8 +7,19 @@ account/migrations/*
 authentication/__pycache__/*
 authentication/migrations/*
 
+step1/__pycache__/*
+step1/migrations/*
+
+step2/__pycache__/*
+step2/migrations/*
+
+step3/__pycache__/*
+step3/migrations/*
+
 daraja/__pycache__/*
 daraja/migrations/*
 
 media/*
 chamayetu/__pycache__/*
+
+*.pyc

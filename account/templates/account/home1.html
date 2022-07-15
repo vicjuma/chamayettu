@@ -1,0 +1,550 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="container mb-4 pb-2">
+    <p class="fs-6 fst-italic">{{request.user.get_full_name}}</p>
+    <p class="fs-6 fst-italic">{{request.user.get_username}}</p>
+    <hr/>
+    {% if errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Sorry!</strong> {{errors}}.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Hurray!</strong> {{success}}.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    <div class="row g-4 mt-1">
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <p class="fw-bold fs-5">Account Details</p>
+            <div class="row g-4">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="card shadow">
+                        <div class="card-body py-4 text-center">
+                            <h5 class="card-title">{% if chama %} Leave {% else %} Join {%endif%} Chama</h5>
+                            <p class="card-text"></p>
+                            {% if chama %}
+                                {% if chama.leave %}
+                                    <a href="{% url 'step1' %}" class="btn btn-danger px-4 my-4">Leave</a>
+                                {% else %}
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-danger btn-block">Leave</button>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'step1' %}" class="btn btn-primary px-4 my-4">Join</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bolder">Payment Details</h5>
+                            <p class="card-text pt-2">Receipt: {{transaction.receipt_no}}</p>
+                            <p class="card-text">Amount: {{transaction.amount}}</p>
+                            <p class="card-text">Date: {{transaction.created}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mt-2 p-2">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bolder">Savings Account</h5>
+                        <p class="card-text py-2">Total Amount: {{total_savings}} Ksh</p>
+                        <p class="card-text" id="message">
+                        </p>
+                        <p class="card-text">
+                            <div class="d-flex flex-row">
+                                <div>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdropSave" class="btn btn-primary btn-block" id="save">Save</button>
+                                </div>
+                            </div>
+                        </p>
+                        <p class="card-text text-muted fst-italic" style="font-size: 12px;">N.B You can pay you conribution using your saving.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <p class="fw-bold fs-5">CHAMAS</p>
+            <div class="row g-2">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="row no-gutters justify-content-between">
+                                <div class="col">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary"><span class="text-muted">Amount: </span>1,000</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">1000</a>
+                                        <a class="dropdown-item" href="#">3000</a>
+                                        <a class="dropdown-item" href="#">5000</a>
+                                        <a class="dropdown-item" href="#">10000</a>
+                                        <a class="dropdown-item" href="#">15000</a>
+                                        <a class="dropdown-item" href="#">20000</a>
+                                        <a class="dropdown-item" href="#">25000</a>
+                                        <a class="dropdown-item" href="#">5000</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col float-right">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary"><span class="text-muted">Frequency: </span>Weekly</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="#">Separated link</a>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fs-6 pb-1"></h5>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                
+                    <div class="card shadow mt-3">
+                        <div class="card-body">
+                            <div class="container m-0">
+                                <div class="row no-gutters justify-content-between">
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Amount: </span>1,000</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Frequency: </span>Weekly</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr/>
+                            <p class="card-text"></p>
+                            <p class="card-text"><span class="text-muted">Level: </span>1</p>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Members: 2 out of 3
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Joshua Karanja</div>
+                                            <div class="col-4">+254 715 *** 977</div>
+                                          </div>
+                                    </div>
+                                </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Clinton opiyo</div>
+                                            <div class="col-4">+254 734 *** 868</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">-</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <div class="card-body">
+                                  <a href="#" class="card-link btn btn-primary">Join chama</a>
+                                </div>
+                            </div>
+
+
+                            <div class="container mt-2">
+                                <p class="card-text"><span class="text-muted">Created: Friday 15 July 2022</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mt-3">
+                        <div class="card-body">
+                            <div class="container m-0">
+                                <div class="row no-gutters justify-content-between">
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Amount: </span>5,000</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Frequency: </span>Monthly</h5>
+                                    </div>
+                                  </div>
+                            </div>
+                            
+                            <hr/>
+                            <p class="card-text"></p>
+                            <p class="card-text"><span class="text-muted">Level: </span>1</p>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Members: 2 out of 3
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Joshua Karanja</div>
+                                            <div class="col-4">+254 715 *** 977</div>
+                                          </div>
+                                    </div>
+                                </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Clinton opiyo</div>
+                                            <div class="col-4">+254 734 *** 868</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">-</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <div class="card-body">
+                                  <a href="#" class="card-link btn btn-primary">Join chama</a>
+                                </div>
+                            </div>
+
+
+                            <div class="container mt-2">
+                                <p class="card-text"><span class="text-muted">Created: Friday 15 July 2022</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mt-3">
+                        <div class="card-body">
+                            <div class="container m-0">
+                                <div class="row no-gutters justify-content-between">
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Amount: </span>500</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Frequency: </span>Weekly</h5>
+                                    </div>
+                                  </div>
+                            </div>
+                            
+                            <hr/>
+                            <p class="card-text"></p>
+                            <p class="card-text"><span class="text-muted">Level: </span>1</p>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Members: 2 out of 3
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Joshua Karanja</div>
+                                            <div class="col-4">+254 715 *** 977</div>
+                                          </div>
+                                    </div>
+                                </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Clinton opiyo</div>
+                                            <div class="col-4">+254 734 *** 868</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">-</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <div class="card-body">
+                                  <a href="#" class="card-link btn btn-primary">Join chama</a>
+                                </div>
+                            </div>
+
+
+                            <div class="container mt-2">
+                                <p class="card-text"><span class="text-muted">Created: Friday 15 July 2022</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Confirmation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Cannot leave until you are in level 2.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-bs-dismiss="modal">Okay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Members</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for user in users %}
+                    {% if user.chama_id == chama.id %}
+                        {% if user.profile_image %}
+                            <p class="card-text"><span><img src="{{ user.profile_image.url }}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% else %}
+                            <p class="card-text"><span><img src="{% static 'img/avatar.jpg' %}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Contribution</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for user in users %}
+                    {% if user.chama_id == chama.id %}
+                        {% if user.profile_image %}
+                            <p class="card-text"><span><img src="{{ user.profile_image.url }}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% else %}
+                            <p class="card-text"><span><img src="{% static 'img/avatar.jpg' %}" class="rounded-circle border border-2 mx-3" alt="logo" width="30" height="30" style="object-fit: contain;"></span> {{user.get_full_name}}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+              <button id="pay" type="button" class="btn btn-primary" data-bs-dismiss="modal">Pay.</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="staticBackdropSave" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Save</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3 border bg-white p-4 rounded shadow mb-5" id="login-form">
+                    <div class="mb-3">
+                      <label for="phone_number" class="form-label">Phone number</label>
+                      <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{request.user.get_username}}">
+                    </div>
+                    <div class="mb-3">
+                      <label for="amount" class="form-label">Amount</label>
+                      <input type="text" class="form-control" id="amount" name="amount" aria-describedby="emailHelp">
+                      <div id="emailHelp" class="form-text">Enter amount you wish to save.</div>
+                    </div>
+                  </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="okay">Okay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+</div>
+<script>
+    const okay = document.getElementById('okay')
+    const phone_number = document.getElementById('phone_number')
+    const amount = document.getElementById('amount')
+    const errors = document.getElementById('errors')
+    const message = document.getElementById('message')
+    const save = document.getElementById('save')
+
+    const contribute = document.getElementById('contribute')
+    const pay = document.getElementById('pay')
+
+
+    const number = phone_number.value
+    let amount_ =  1
+
+    const url = `http://${window.location.host}/api/v1/mpesa/savings/`
+    const url_status = `http://${window.location.host}/api/v1/mpesa/savings/status/`
+    
+    const formData = new FormData()
+    formData.append('phone_number', number)
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';')
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+                    break
+                }
+            }
+        }
+        return cookieValue
+    }
+
+    const csrftoken = getCookie('csrftoken')
+
+    const generate_success = (response) => {
+        message.innerHTML = `<div class="alert fs-6 alert-success alert-dismissible fade show" role="alert">
+            ${response}
+        </div>`
+    }
+
+    const generate_error = (response) => {
+        message.innerHTML = `<div class="alert fs-6 alert-danger alert-dismissible fade show" role="alert">
+            ${response}
+        </div>`
+    }
+
+    let timer = 0
+
+    const check_status = (response, checkout_id) => {
+        axios.get(`${url_status}${checkout_id}/`, {
+            headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+            let code = res.data.code
+            let description = res.data.description
+            if(code == 0){
+                generate_success(description)
+                setTimeout(() => {
+                window.location.href = '/'
+                }, 2000)
+                save.disabled = false
+                save.innerText = 'save'
+            }else if(code != 0 && code != 1){
+                generate_error(description)
+                save.disabled = false
+                save.innerText = 'save'
+            }else{
+                if(timer < 90){
+                setTimeout(() => {
+                    timer++
+                    check_status(response, checkout_id)
+                }, 1000)
+                }else{
+                generate_error('Transaction timed out')
+                save.disabled = false
+                save.innerText = 'Save'
+                timer = 0
+                }
+            }
+            })
+            .catch(err => {
+                save.disabled = false
+                save.innerText = 'Save'
+            })
+    }
+
+    okay.addEventListener('click', () => {
+        amount_ = amount.value
+        formData.append('amount', amount_)
+        save.disabled = true
+        save.innerHTML = 'Processing <i class="fas fa-spinner fa-spin"></i>'
+
+        if(amount_ == '' ){
+            generate_error('Please enter amount/greater than 1')
+            save.disabled = false
+            save.innerText = 'Save'
+            return
+        }
+
+        axios.post(url, formData, {
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(res => {
+            let data = res.data.data.ResponseDescription
+            let checkout_id = res.data.data.CheckoutRequestID
+            generate_success(data)
+            check_status(res, checkout_id) 
+          })
+          .catch(err => {
+            console.log(err.response)
+            save.disabled = false
+            save.innerHTML = 'save'
+            errors.innerHTML = '<strong>Sorry!</strong> Contribution failed. Please try again.'
+          })
+    })
+
+    pay.addEventListener('click', () => {
+        // amount_ = amount.value
+        // formData.append('amount', amount_)
+        contribute.disabled = true
+        contribute.innerHTML = 'Processing <i class="fas fa-spinner fa-spin"></i>'
+
+        // if(amount_ == '' ){
+        //     generate_error('Please enter amount/greater than 1')
+        //     save.disabled = false
+        //     save.innerText = 'Save'
+        //     return
+        // }
+
+        // axios.post(url, formData, {
+        //   headers: {
+        //     'X-CSRFToken': csrftoken,
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // })
+        //   .then(res => {
+        //     let data = res.data.data.ResponseDescription
+        //     let checkout_id = res.data.data.CheckoutRequestID
+        //     generate_success(data)
+        //     check_status(res, checkout_id) 
+        //   })
+        //   .catch(err => {
+        //     console.log(err.response)
+        //     save.disabled = false
+        //     save.innerHTML = 'save'
+        //     errors.innerHTML = '<strong>Sorry!</strong> Contribution failed. Please try again.'
+        //   })
+    })
+
+</script>
+{% endblock %}

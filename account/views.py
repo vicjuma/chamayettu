@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, login
 from account.models import ContibutionFrequency, Points, Chama
 from daraja.models import Savings, Transaction, TotalAmount
+from django.views.generic import TemplateView
+
 
 User = get_user_model()
 @login_required
@@ -220,4 +222,8 @@ def reset_password(request):
 
 def handle_404(request, exception):
     return render(request, '404.html')
+
+
+class Home1View(TemplateView):
+    template_name = "account/home1.html"
 

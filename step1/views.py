@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from step1.models import PersonalInfoStepOne
 from authentication.models import User
 
-# Create your views here.
+
 @login_required
 def personal_info_step1(request):
     context = {}

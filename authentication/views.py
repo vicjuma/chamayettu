@@ -12,7 +12,6 @@ from verify_email.email_handler import send_verification_email
 
 User = get_user_model()
 
-# Create your views here.
 def index(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -28,9 +27,7 @@ def register(request):
             inactive_user = send_verification_email(request, form)
             context['success'] = 'User created successfully, Login to continue'
             return render(request, 'authentication/confirm_email.html')
-        return render(request, 'authentication/register.html', {'form': form})
     return render(request, 'authentication/register.html', {'form': form})
-    # return render(request, 'authentication/login.html', context)
 
 def login_view(request):
     if request.method == 'GET':

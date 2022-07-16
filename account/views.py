@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, login
 from account.models import ContibutionFrequency, Points, Chama
 from daraja.models import Savings, Transaction, TotalAmount
+from django.views.generic import TemplateView
+
 
 User = get_user_model()
-# Create your views here.
 @login_required
 def home(request):
     context = {}
@@ -51,6 +52,8 @@ def home(request):
                 context["transaction"] = transaction
 
     # Get chama details
+     # Check if next payment day is past to activate contribute button.
+     #  
     if Transaction.objects.filter(phone_number=phone).exists():
         transaction = Transaction.objects.filter(phone_number=phone).latest('created')
         if transaction.description == "The service request is processed successfully.":
@@ -219,4 +222,8 @@ def reset_password(request):
 
 def handle_404(request, exception):
     return render(request, '404.html')
+
+
+class Home1View(TemplateView):
+    template_name = "account/home1.html"
 

@@ -69,55 +69,222 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-6">
-            <p class="fw-bold fs-5">Enrolled Chama</p>
+            <p class="fw-bold fs-5">CHAMAS</p>
             <div class="row g-2">
                 <div class="col-sm-12 col-md-12 col-lg-12">
-                    {% if chama %}
+
                     <div class="card shadow">
                         <div class="card-body">
-                            <h5 class="card-title fs-6 pb-1">Chama ID: <span class="fs-6 fst-italic text-muted"> {{chama.id}}</span></h5>
-                            <hr/>
-                            <p class="card-text pt-2">Frequency: {{chama.frequency}}</p>
-                            <p class="card-text">Amount: {{chama.amount}}</p>
-                            <p class="card-text">Level: {{chama.level}}</p>
-                            <p class="card-text">Next payment: {{chama.next_payment_date}}</p>
-                            <p class="card-text">Days remaining: {{chama.days_left}}</p>
-                            <p class="card-text">
-                                <div class="d-flex flex-row">
-                                    <div>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" class="btn btn-outline-primary broder border-2 px-4">
-                                            {% if count > 1 %} Members {% else %} Member {% endif %} <span class="badge bg-danger mx-1">{{count}}</span>
-                                          </button>
-                                    </div>
-                                    <div class="mx-2">
-                                        {% if chama.days_left < 6 %}
-                                            <button 
-                                            id="contribute"
-                                            type="button" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#staticBackdrop2" 
-                                            class="btn btn-primary broder border-2 px-4">
-                                            Contribute
+                            <div class="row no-gutters justify-content-between">
+                                <div class="col">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary"><span class="text-muted">Amount: </span>1,000</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
                                         </button>
-                                        {% endif %}    
+                                        <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">1000</a>
+                                        <a class="dropdown-item" href="#">3000</a>
+                                        <a class="dropdown-item" href="#">5000</a>
+                                        <a class="dropdown-item" href="#">10000</a>
+                                        <a class="dropdown-item" href="#">15000</a>
+                                        <a class="dropdown-item" href="#">20000</a>
+                                        <a class="dropdown-item" href="#">25000</a>
+                                        <a class="dropdown-item" href="#">5000</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </p>
+                                <div class="col float-right">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary"><span class="text-muted">Frequency: </span>Weekly</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Weekly</a>
+                                        <a class="dropdown-item" href="#">Monthly</a>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fs-6 pb-1"></h5>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                
+                    <div class="card shadow mt-3">
+                        <div class="card-body">
+                            <div class="container m-0">
+                                <div class="row no-gutters justify-content-between">
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Amount: </span>1,000</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Frequency: </span>Weekly</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr/>
+                            <p class="card-text"></p>
+                            <p class="card-text"><span class="text-muted">Level: </span>1</p>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Members: 2 out of 3
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Joshua Karanja</div>
+                                            <div class="col-4">+254 715 *** 977</div>
+                                          </div>
+                                    </div>
+                                </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Clinton opiyo</div>
+                                            <div class="col-4">+254 734 *** 868</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">-</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <div class="card-body">
+                                  <a href="#" class="card-link btn btn-primary">Join chama</a>
+                                </div>
+                            </div>
 
-                            <!-- footer -->
-                            <div class="card-footer">
-                                <p class="card-text">Created: {{chama.created}}</p>
+
+                            <div class="container mt-2">
+                                <p class="card-text"><span class="text-muted">Created: Friday 15 July 2022</span></p>
                             </div>
                         </div>
                     </div>
-                    {% else %}
-                    <div class="card shadow bg-light">
-                        <div class="card-body text-center">
+
+                    <div class="card shadow mt-3">
+                        <div class="card-body">
+                            <div class="container m-0">
+                                <div class="row no-gutters justify-content-between">
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Amount: </span>5,000</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Frequency: </span>Monthly</h5>
+                                    </div>
+                                  </div>
+                            </div>
+                            
+                            <hr/>
                             <p class="card-text"></p>
-                            <p class="card-text px-4 my-3">You haven't joined any yet</p>
+                            <p class="card-text"><span class="text-muted">Level: </span>1</p>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Members: 2 out of 3
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Joshua Karanja</div>
+                                            <div class="col-4">+254 715 *** 977</div>
+                                          </div>
+                                    </div>
+                                </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Clinton opiyo</div>
+                                            <div class="col-4">+254 734 *** 868</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">-</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <div class="card-body">
+                                  <a href="#" class="card-link btn btn-primary">Join chama</a>
+                                </div>
+                            </div>
+
+
+                            <div class="container mt-2">
+                                <p class="card-text"><span class="text-muted">Created: Friday 15 July 2022</span></p>
+                            </div>
                         </div>
                     </div>
-                    {% endif %}
+
+                    <div class="card shadow mt-3">
+                        <div class="card-body">
+                            <div class="container m-0">
+                                <div class="row no-gutters justify-content-between">
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Amount: </span>500</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="card-title fs-6 pb-1"><span class="text-muted">Frequency: </span>Weekly</h5>
+                                    </div>
+                                  </div>
+                            </div>
+                            
+                            <hr/>
+                            <p class="card-text"></p>
+                            <p class="card-text"><span class="text-muted">Level: </span>1</p>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Members: 2 out of 3
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Joshua Karanja</div>
+                                            <div class="col-4">+254 715 *** 977</div>
+                                          </div>
+                                    </div>
+                                </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">Clinton opiyo</div>
+                                            <div class="col-4">+254 734 *** 868</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div class="container m-0">
+                                        <div class="row no-gutters justify-content-between">
+                                            <div class="col-4">-</div>
+                                          </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <div class="card-body">
+                                  <a href="#" class="card-link btn btn-primary">Join chama</a>
+                                </div>
+                            </div>
+
+
+                            <div class="container mt-2">
+                                <p class="card-text"><span class="text-muted">Created: Friday 15 July 2022</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>

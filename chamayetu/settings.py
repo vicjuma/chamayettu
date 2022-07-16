@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'step1',
     'step2',
     'step3',
+    'backoffice',
     'verify_email.apps.VerifyEmailConfig'
 ]
 
